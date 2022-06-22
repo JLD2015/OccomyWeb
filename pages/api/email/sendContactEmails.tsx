@@ -104,9 +104,9 @@ export default async function sendContactEmail(
           console.log(err);
         });
     } else {
-      response.status(200).json({ status: reCAPTCHAJSON.score });
+      response.status(200).json({ status: "Failed" });
     }
   } catch (e) {
-    response.status(200).json({ status: "Failed" });
+    response.status(200).json({ status: e });
   }
 }
