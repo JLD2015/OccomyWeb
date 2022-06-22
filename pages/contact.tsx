@@ -66,13 +66,19 @@ export default function contactUs() {
             setSuccessMessage(true);
 
             // Clear the form
-            document.getElementById("contact-form").reset();
+            var resetForm = document.getElementById(
+              "contact-form"
+            ) as HTMLFormElement;
+            resetForm.reset();
           } else {
             setProgressIndicator(false);
             setFailedMessage(true);
 
             // Clear the form
-            document.getElementById("contact-form").reset();
+            var resetForm = document.getElementById(
+              "contact-form"
+            ) as HTMLFormElement;
+            resetForm.reset();
           }
         });
     });
