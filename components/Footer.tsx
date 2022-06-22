@@ -48,8 +48,8 @@ export default function Footer() {
               </Typography>
             </a>
           </Link>
-          
-            <a href="/termsandconditions">
+          <Link href="/termsandconditions">
+            <a>
               <Typography
                 sx={{
                   fontSize: 17,
@@ -61,7 +61,7 @@ export default function Footer() {
                 Terms and Conditions
               </Typography>
             </a>
-          
+          </Link>
           <Link href="/contact">
             <a>
               <Typography
