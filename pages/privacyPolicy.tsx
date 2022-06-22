@@ -17,7 +17,7 @@ import { blue } from "@mui/material/colors";
 
 const drawerWidth = 300;
 
-export default function privacyPolicy() {
+export default function PrivacyPolicy() {
   // Control drawer open/close state
   const [mobileOpen, setMobileOpen] = useState(false);
   const handleDrawerToggle = () => {
@@ -40,22 +40,6 @@ export default function privacyPolicy() {
   const ref12 = useRef(null);
   const ref13 = useRef(null);
 
-  const sectionRefs = [
-    { section: "1", ref: ref1 },
-    { section: "2", ref: ref2 },
-    { section: "3", ref: ref3 },
-    { section: "4", ref: ref4 },
-    { section: "5", ref: ref5 },
-    { section: "6", ref: ref6 },
-    { section: "7", ref: ref7 },
-    { section: "8", ref: ref8 },
-    { section: "9", ref: ref9 },
-    { section: "10", ref: ref10 },
-    { section: "11", ref: ref11 },
-    { section: "12", ref: ref12 },
-    { section: "13", ref: ref13 },
-  ];
-
   const [visibleSection, setVisibleSection] = useState("");
 
   const getDimensions = (ele) => {
@@ -70,6 +54,22 @@ export default function privacyPolicy() {
   };
 
   useEffect(() => {
+    const sectionRefs = [
+      { section: "1", ref: ref1 },
+      { section: "2", ref: ref2 },
+      { section: "3", ref: ref3 },
+      { section: "4", ref: ref4 },
+      { section: "5", ref: ref5 },
+      { section: "6", ref: ref6 },
+      { section: "7", ref: ref7 },
+      { section: "8", ref: ref8 },
+      { section: "9", ref: ref9 },
+      { section: "10", ref: ref10 },
+      { section: "11", ref: ref11 },
+      { section: "12", ref: ref12 },
+      { section: "13", ref: ref13 },
+    ];
+
     const handleScroll = () => {
       const { height: headerHeight } = getDimensions(drawerRef.current);
       const scrollPosition = window.scrollY + headerHeight;

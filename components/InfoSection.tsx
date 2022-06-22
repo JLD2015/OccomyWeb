@@ -197,7 +197,7 @@ export default function InfoSection() {
                   </Typography>
                   <Typography sx={{ fontSize: 18 }}>
                     Receive payments online or in store free of charge. You also
-                    don't need any special hardware.
+                    don&apost need any special hardware.
                   </Typography>
                 </Stack>
               </CardContent>

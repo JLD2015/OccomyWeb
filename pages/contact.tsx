@@ -11,10 +11,11 @@ import {
 import { Box } from "@mui/system";
 import Head from "next/head";
 import Image from "next/image";
+import Script from "next/script";
 import { useState } from "react";
 import Footer from "../components/Footer";
 
-export default function contactUs() {
+export default function Contact() {
   // <========== Variables ==========>
   const [failedMessage, setFailedMessage] = useState(false);
   const [progressIndicator, setProgressIndicator] = useState(false);
@@ -90,10 +91,15 @@ export default function contactUs() {
       {/* Page header */}
       <Head>
         <title>Contact Us</title>
-        <script
-          src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITEKEY}`}
-        />
       </Head>
+
+      {/* Scripts */}
+      <Script
+        src={
+          "https://www.google.com/recaptcha/api.js?render=" +
+          process.env.NEXT_PUBLIC_RECAPTCHA_SITEKEY
+        }
+      />
 
       {/* Body */}
       <Grid
@@ -159,7 +165,7 @@ export default function contactUs() {
             }}
           >
             Our team is happy to answer any of your questions. Please complete
-            the form and we'll get back to you as soon as possible.
+            the form and we&aposll get back to you as soon as possible.
           </Typography>
         </Stack>
 

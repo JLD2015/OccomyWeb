@@ -18,7 +18,7 @@ import { blue } from "@mui/material/colors";
 
 const drawerWidth = 300;
 
-export default function termsOfService() {
+export default function TermsAndConditions() {
   // Control drawer open/close state
   const [mobileOpen, setMobileOpen] = useState(false);
   const handleDrawerToggle = () => {
@@ -36,17 +36,6 @@ export default function termsOfService() {
   const ref7 = useRef(null);
   const ref8 = useRef(null);
 
-  const sectionRefs = [
-    { section: "1", ref: ref1 },
-    { section: "2", ref: ref2 },
-    { section: "3", ref: ref3 },
-    { section: "4", ref: ref4 },
-    { section: "5", ref: ref5 },
-    { section: "6", ref: ref6 },
-    { section: "7", ref: ref7 },
-    { section: "8", ref: ref8 },
-  ];
-
   // Used for controlling highlighting of sections
 
   const [visibleSection, setVisibleSection] = useState("");
@@ -63,6 +52,17 @@ export default function termsOfService() {
   };
 
   useEffect(() => {
+    const sectionRefs = [
+      { section: "1", ref: ref1 },
+      { section: "2", ref: ref2 },
+      { section: "3", ref: ref3 },
+      { section: "4", ref: ref4 },
+      { section: "5", ref: ref5 },
+      { section: "6", ref: ref6 },
+      { section: "7", ref: ref7 },
+      { section: "8", ref: ref8 },
+    ];
+
     const handleScroll = () => {
       const { height: headerHeight } = getDimensions(drawerRef.current);
       const scrollPosition = window.scrollY + headerHeight;
@@ -1420,7 +1420,7 @@ export default function termsOfService() {
             <h3>Intellectual Property</h3>
             <h4>Occomy Trademarks</h4>
             <p>
-              &ldquo;Occomy '' and all logos related to Occomy products and
+              &ldquo;Occomy and all logos related to Occomy products and
               services are trademarks or registered trademarks of Occomy (Pty)
               Ltd. You may not copy, imitate, modify or use them without
               Occomy&rsquo;s prior written consent. All page headers, custom
