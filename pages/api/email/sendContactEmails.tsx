@@ -12,12 +12,12 @@ export default async function sendContactEmail(
   const body = request.body;
 
   if (!body.token) {
-    return response.status(400).json({ data: "reCAPTCHA failed" });
+    return response.status(400).json({ status: "reCAPTCHA failed" });
   }
   const token = body.token;
 
   if (!body.name) {
-    return response.status(400).json({ data: "Please provide a valid name" });
+    return response.status(400).json({ status: "Please provide a valid name" });
   }
   const name = body.name;
   if (!body.email) {
@@ -30,7 +30,7 @@ export default async function sendContactEmail(
   if (!body.message) {
     return response
       .status(400)
-      .json({ data: "Please provide a valid message" });
+      .json({ status: "Please provide a valid message" });
   }
   const message = body.message;
 
@@ -72,6 +72,7 @@ export default async function sendContactEmail(
           },
         })
         .then((res) => {
+          console.log(res);
           // Fourth we send an email to the cutomer
           emailTemplateSource = fs.readFileSync(
             "./emailTemplates/receivedAssistanceRequest.hbs",
@@ -92,13 +93,20 @@ export default async function sendContactEmail(
               },
             })
             .then((res) => {
-              response.status(200).json({ data: "Success" });
+              console.log(res);
+              response.status(200).json({ status: "Success" });
+            })
+            .catch((err) => {
+              console.log(err);
             });
+        })
+        .catch((err) => {
+          console.log(err);
         });
     } else {
-      response.status(200).json({ data: "Failed" });
+      response.status(200).json({ status: "Failed" });
     }
   } catch (e) {
-    response.status(200).json({ data: "Failed" });
+    response.status(200).json({ status: "Failed" });
   }
 }

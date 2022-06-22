@@ -62,7 +62,7 @@ export default function Contact() {
           const response = await fetch(endpoint, options);
           const result = await response.json();
 
-          if (result.data === "Success") {
+          if (result.status === "Success") {
             setProgressIndicator(false);
             setSuccessMessage(true);
 
