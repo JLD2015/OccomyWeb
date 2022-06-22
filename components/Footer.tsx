@@ -62,7 +62,7 @@ export default function Footer() {
               </Typography>
             </a>
           </Link>
-          <Link href="/contact">
+          <Link href="/Contact">
             <a>
               <Typography
                 sx={{
