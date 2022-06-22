@@ -34,7 +34,7 @@ export default function Footer() {
           }}
           spacing={{ md: 4 }}
         >
-          <Link href="/PrivacyPolicy">
+          <Link href="/privacypolicy">
             <a>
               <Typography
                 sx={{
@@ -48,7 +48,7 @@ export default function Footer() {
               </Typography>
             </a>
           </Link>
-          <Link href="/TermsAndConditions">
+          <Link href="/termsandconditions">
             <a>
               <Typography
                 sx={{
@@ -62,7 +62,7 @@ export default function Footer() {
               </Typography>
             </a>
           </Link>
-          <Link href="/Contact">
+          <Link href="/contact">
             <a>
               <Typography
                 sx={{
