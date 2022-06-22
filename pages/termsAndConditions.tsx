@@ -51,40 +51,40 @@ export default function TermsAndConditions() {
     };
   };
 
-  useEffect(() => {
-    const sectionRefs = [
-      { section: "1", ref: ref1 },
-      { section: "2", ref: ref2 },
-      { section: "3", ref: ref3 },
-      { section: "4", ref: ref4 },
-      { section: "5", ref: ref5 },
-      { section: "6", ref: ref6 },
-      { section: "7", ref: ref7 },
-      { section: "8", ref: ref8 },
-    ];
+  // useEffect(() => {
+  //   const sectionRefs = [
+  //     { section: "1", ref: ref1 },
+  //     { section: "2", ref: ref2 },
+  //     { section: "3", ref: ref3 },
+  //     { section: "4", ref: ref4 },
+  //     { section: "5", ref: ref5 },
+  //     { section: "6", ref: ref6 },
+  //     { section: "7", ref: ref7 },
+  //     { section: "8", ref: ref8 },
+  //   ];
 
-    const handleScroll = () => {
-      const { height: headerHeight } = getDimensions(drawerRef.current);
-      const scrollPosition = window.scrollY + headerHeight;
-      const selected = sectionRefs.find(({ section, ref }) => {
-        const ele = ref.current;
-        if (ele) {
-          const { offsetBottom, offsetTop } = getDimensions(ele);
-          return scrollPosition > offsetTop && scrollPosition < offsetBottom;
-        }
-      });
-      if (selected && selected.section !== visibleSection) {
-        setVisibleSection(selected.section);
-      } else if (!selected && visibleSection) {
-        setVisibleSection(undefined);
-      }
-    };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [visibleSection]);
+  //   const handleScroll = () => {
+  //     const { height: headerHeight } = getDimensions(drawerRef.current);
+  //     const scrollPosition = window.scrollY + headerHeight;
+  //     const selected = sectionRefs.find(({ section, ref }) => {
+  //       const ele = ref.current;
+  //       if (ele) {
+  //         const { offsetBottom, offsetTop } = getDimensions(ele);
+  //         return scrollPosition > offsetTop && scrollPosition < offsetBottom;
+  //       }
+  //     });
+  //     if (selected && selected.section !== visibleSection) {
+  //       setVisibleSection(selected.section);
+  //     } else if (!selected && visibleSection) {
+  //       setVisibleSection(undefined);
+  //     }
+  //   };
+  //   handleScroll();
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [visibleSection]);
 
   // Defines the content of the drawer -> Declare here as we use it twice
   const drawer = (
