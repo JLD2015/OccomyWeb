@@ -104,7 +104,7 @@ export default async function sendContactEmail(
           console.log(err);
         });
     } else {
-      response.status(200).json({ status: "Failed" });
+      response.status(200).json({ status: reCAPTCHAJSON.score });
     }
   } catch (e) {
     response.status(200).json({ status: "Failed" });

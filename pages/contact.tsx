@@ -75,8 +75,6 @@ export default function Contact() {
             setProgressIndicator(false);
             setFailedMessage(true);
 
-            console.log(result);
-
             // Clear the form
             var resetForm = document.getElementById(
               "contact-form"
