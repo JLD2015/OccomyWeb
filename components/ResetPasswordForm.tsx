@@ -1,6 +1,7 @@
 import LockIcon from "@mui/icons-material/Lock";
 import {
   Button,
+  CircularProgress,
   Grid,
   Stack,
   TextField,
@@ -16,6 +17,7 @@ export default function ResetPasswordForm() {
   const [failed, setFailed] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
   const [passwordsDontMatch, setPasswordsDontMatch] = useState(false);
+  const [progressIndicator, setProgressIndicator] = useState(false);
   const [submitMessage, setSubmitMessage] = useState(true);
   const theme = useTheme();
 
@@ -23,6 +25,10 @@ export default function ResetPasswordForm() {
   const handleSubmit = async (event) => {
     // Stop form from submitting and refreshing page
     event.preventDefault();
+
+    // Show the loading animation
+    setSubmitMessage(false);
+    setProgressIndicator(true);
 
     // Get data from the form.
     const password = event.target.password.value;
@@ -34,7 +40,7 @@ export default function ResetPasswordForm() {
         "reset-password-form"
       ) as HTMLFormElement;
       resetForm.reset();
-      setSubmitMessage(false);
+      setProgressIndicator(false);
       setPasswordsDontMatch(true);
       setTimeout(function () {
         setSubmitMessage(true);
@@ -67,15 +73,21 @@ export default function ResetPasswordForm() {
         "reset-password-form"
       ) as HTMLFormElement;
       resetForm.reset();
-      setSubmitMessage(false);
+      setProgressIndicator(false);
       setPasswordChanged(true);
+      setTimeout(function () {
+        router.replace("/");
+      }, 4000);
     } else {
       var resetForm = document.getElementById(
         "reset-password-form"
       ) as HTMLFormElement;
       resetForm.reset();
-      setSubmitMessage(false);
+      setProgressIndicator(false);
       setFailed(true);
+      setTimeout(function () {
+        router.replace("/");
+      }, 4000);
     }
   };
 
@@ -188,9 +200,10 @@ export default function ResetPasswordForm() {
               )}
               {failed && (
                 <Typography sx={{ color: "red" }}>
-                  Failed, please try again
+                  Unsuccessful, please try again
                 </Typography>
               )}
+              {progressIndicator && <CircularProgress size={25} />}
             </Button>
           </Stack>
         </form>

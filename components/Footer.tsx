@@ -18,7 +18,6 @@ export default function Footer() {
         <Box sx={{ marginTop: 2 }}>
           <Image src="/images/logo.png" height={60} width={60} alt="Logo" />
         </Box>
-
         {/* End logo */}
         {/* Links to other pages */}
         <Stack

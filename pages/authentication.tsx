@@ -85,9 +85,7 @@ export default function Authentication() {
         {mode === "verifyEmail" && <VerifyEmailForm />}
 
         {/* Bottom spacer */}
-        <Typography>
-          <Footer />
-        </Typography>
+        <Footer />
         {/* End bottom spacer */}
       </Grid>
     </>
