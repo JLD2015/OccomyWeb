@@ -1,9 +1,10 @@
 import { Grid, Stack, Typography, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
-import lottie from "lottie-web";
 import { useRouter } from "next/router";
 import SuccessAnimation from "./animations/SuccessAnimation";
+import FailedAnimation from "./animations/FailedAnimation";
+import LoadingAnimation from "./animations/LoadingAnimation";
 
 export default function VerifyEmailForm() {
   // <========== Variables ==========>
@@ -14,33 +15,6 @@ export default function VerifyEmailForm() {
   const theme = useTheme();
 
   // <========== UI Appears ==========>
-
-  // Used for loading Lottie animation
-
-  useEffect(() => {
-    const instance = lottie.loadAnimation({
-      container: document.getElementById("lottie-failed"),
-      renderer: "svg",
-      autoplay: true,
-      loop: false,
-      animationData: require("../public/animations/failed.json"),
-    });
-
-    // Return clean up function here
-    return () => instance.destroy();
-  }, []);
-
-  useEffect(() => {
-    const instance = lottie.loadAnimation({
-      container: document.getElementById("lottie-loading"),
-      renderer: "svg",
-      autoplay: true,
-      animationData: require("../public/animations/loading.json"),
-    });
-
-    // Return clean up function here
-    return () => instance.destroy();
-  }, []);
 
   // Used for validating the email address
   useEffect(() => {
@@ -124,7 +98,7 @@ export default function VerifyEmailForm() {
                 marginBottom: 3,
               }}
             >
-              <div id="lottie-failed" />
+              <FailedAnimation />
             </Box>
             <Typography
               sx={{
@@ -162,7 +136,7 @@ export default function VerifyEmailForm() {
               marginBottom: 3,
             }}
           >
-            <div id="lottie-loading" />
+            <LoadingAnimation />
           </Box>
         )}
 

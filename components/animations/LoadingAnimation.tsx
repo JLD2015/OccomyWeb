@@ -1,14 +1,14 @@
 import lottie from "lottie-web";
 import { useEffect } from "react";
 
-export default function SuccessAnimation() {
+export default function LoadingAnimation() {
   useEffect(() => {
     const instance = lottie.loadAnimation({
       container: document.getElementById("lottie"),
       renderer: "svg",
       autoplay: true,
       loop: false,
-      animationData: require("../../public/animations/success.json"),
+      animationData: require("../../public/animations/loading.json"),
     });
 
     // Return clean up function here
