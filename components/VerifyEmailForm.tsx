@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import lottie from "lottie-web";
 import { useRouter } from "next/router";
+import SuccessAnimation from "./animations/SuccessAnimation";
 
 export default function VerifyEmailForm() {
   // <========== Variables ==========>
@@ -35,19 +36,6 @@ export default function VerifyEmailForm() {
       renderer: "svg",
       autoplay: true,
       animationData: require("../public/animations/loading.json"),
-    });
-
-    // Return clean up function here
-    return () => instance.destroy();
-  }, []);
-
-  useEffect(() => {
-    const instance = lottie.loadAnimation({
-      container: document.getElementById("lottie-success"),
-      renderer: "svg",
-      autoplay: true,
-      loop: false,
-      animationData: require("../public/animations/success.json"),
     });
 
     // Return clean up function here
@@ -201,7 +189,7 @@ export default function VerifyEmailForm() {
                 marginBottom: 3,
               }}
             >
-              <div id="lottie-success" />
+              <SuccessAnimation />
             </Box>
             <Typography
               sx={{
