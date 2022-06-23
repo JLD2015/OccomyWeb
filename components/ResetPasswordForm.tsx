@@ -180,6 +180,10 @@ export default function ResetPasswordForm() {
               variant="contained"
               type="submit"
               sx={{
+                ":focus": {
+                  outline: "none",
+                  boxShadow: "none",
+                },
                 paddingTop: 1,
                 paddingBottom: 1,
                 width: "100%",
