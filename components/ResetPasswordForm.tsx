@@ -179,11 +179,8 @@ export default function ResetPasswordForm() {
             <Button
               variant="contained"
               type="submit"
+              disableRipple={true}
               sx={{
-                ":focus": {
-                  outline: "none",
-                  boxShadow: "none",
-                },
                 paddingTop: 1,
                 paddingBottom: 1,
                 width: "100%",
