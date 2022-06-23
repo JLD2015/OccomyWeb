@@ -180,7 +180,7 @@ export default function ResetPasswordForm() {
               )}
               {passwordsDontMatch && (
                 <Typography sx={{ color: "red" }}>
-                  Passwords don't match
+                  Passwords don&apos;t match
                 </Typography>
               )}
               {passwordChanged && (
