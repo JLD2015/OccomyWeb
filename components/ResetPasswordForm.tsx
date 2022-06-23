@@ -56,7 +56,7 @@ export default function ResetPasswordForm() {
     };
     const JSONdata = JSON.stringify(data);
 
-    const endpoint = "/api/auth/resetPassword";
+    const endpoint = "/api/auth/resetpassword";
     const options = {
       method: "POST",
       headers: {
