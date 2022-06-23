@@ -23,6 +23,11 @@ export default function ResetPasswordForm() {
 
   // <========== Functions ==========>
   const handleSubmit = async (event) => {
+    
+    // Used to remove highlight on button on mobile
+    window.scrollTo(1, 1);
+    window.scrollTo(0, 0);
+
     // Stop form from submitting and refreshing page
     event.preventDefault();
 
@@ -179,8 +184,11 @@ export default function ResetPasswordForm() {
             <Button
               variant="contained"
               type="submit"
-              disableRipple={true}
               sx={{
+                ":focus": {
+                  outline: "none",
+                  boxShadow: "none",
+                },
                 paddingTop: 1,
                 paddingBottom: 1,
                 width: "100%",
