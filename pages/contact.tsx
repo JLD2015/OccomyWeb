@@ -50,7 +50,7 @@ export default function Contact() {
           const JSONdata = JSON.stringify(data);
 
           // Send emails
-          const endpoint = "/api/email/sendContactEmails";
+          const endpoint = "/api/email/sendcontactemails";
           const options = {
             method: "POST",
             headers: {
