@@ -20,7 +20,7 @@ const firebaseApp = initializeApp({
 // Initialise services
 const auth = getAuth(firebaseApp);
 
-export default async function sendContactEmail(
+export default async function ResetPassword(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
