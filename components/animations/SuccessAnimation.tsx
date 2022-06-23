@@ -8,7 +8,7 @@ export default function ResetPasswordForm() {
       renderer: "svg",
       autoplay: true,
       loop: false,
-      animationData: require("../public/animations/success.json"),
+      animationData: require("../../public/animations/success.json"),
     });
 
     // Return clean up function here
