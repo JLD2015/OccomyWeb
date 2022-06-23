@@ -18,6 +18,19 @@ export default function VerifyEmailForm() {
 
   useEffect(() => {
     const instance = lottie.loadAnimation({
+      container: document.getElementById("lottie-failed"),
+      renderer: "svg",
+      autoplay: true,
+      loop: false,
+      animationData: require("../public/animations/failed.json"),
+    });
+
+    // Return clean up function here
+    return () => instance.destroy();
+  }, []);
+
+  useEffect(() => {
+    const instance = lottie.loadAnimation({
       container: document.getElementById("lottie-loading"),
       renderer: "svg",
       autoplay: true,
@@ -28,10 +41,21 @@ export default function VerifyEmailForm() {
     return () => instance.destroy();
   }, []);
 
+  useEffect(() => {
+    const instance = lottie.loadAnimation({
+      container: document.getElementById("lottie-success"),
+      renderer: "svg",
+      autoplay: true,
+      loop: false,
+      animationData: require("../public/animations/success.json"),
+    });
+
+    // Return clean up function here
+    return () => instance.destroy();
+  }, []);
+
   // Used for validating the email address
   useEffect(() => {
-    console.log("Proof I run once");
-
     const data = {
       oobCode: router.query.oobCode,
     };
@@ -55,29 +79,15 @@ export default function VerifyEmailForm() {
       if (result.status === "Success") {
         setLoading(false);
         setSuccess(true);
-        lottie.loadAnimation({
-          container: document.getElementById("lottie-success"),
-          renderer: "svg",
-          autoplay: true,
-          loop: false,
-          animationData: require("../public/animations/success.json"),
-        });
-        // setTimeout(function () {
-        //   router.replace("/");
-        // }, 4000);
+        setTimeout(function () {
+          router.replace("/");
+        }, 4000);
       } else {
         setLoading(false);
         setFailed(true);
-        lottie.loadAnimation({
-          container: document.getElementById("lottie-failed"),
-          renderer: "svg",
-          autoplay: true,
-          loop: false,
-          animationData: require("../public/animations/failed.json"),
-        });
-        // setTimeout(function () {
-        //   router.replace("/");
-        // }, 4000);
+        setTimeout(function () {
+          router.replace("/");
+        }, 4000);
       }
     };
 
