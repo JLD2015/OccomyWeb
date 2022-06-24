@@ -23,7 +23,9 @@ export default function VerifyEmailForm() {
     };
     const JSONdata = JSON.stringify(data);
 
-    const endpoint = "/api/auth/verifyEmail";
+    console.log(router.query);
+
+    const endpoint = "/api/auth/verifyemail";
     const options = {
       method: "POST",
       headers: {

@@ -38,7 +38,7 @@ export default async function SendAccountDeletionEmail(
 
   client.messages
     .create("occomy.com", {
-      from: "noreply@occomy.com",
+      from: "support@occomy.com",
       to: email,
       subject: "Account Deleted",
       html: htmlToSend,
