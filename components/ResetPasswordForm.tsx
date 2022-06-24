@@ -181,8 +181,10 @@ export default function ResetPasswordForm() {
               type="submit"
               sx={{
                 ":focus": {
-                  outline: "none",
-                  boxShadow: "none",
+                  backgroundColor: "#262626",
+                },
+                ":hover": {
+                  backgroundColor: "#262626",
                 },
                 paddingTop: 1,
                 paddingBottom: 1,
@@ -199,9 +201,7 @@ export default function ResetPasswordForm() {
                   Passwords don&apos;t match
                 </Typography>
               )}
-              {passwordChanged && (
-                <Typography sx={{ color: "green" }}>Success</Typography>
-              )}
+              {passwordChanged && <Typography>Success</Typography>}
               {failed && (
                 <Typography sx={{ color: "red" }}>
                   Unsuccessful, please try again
