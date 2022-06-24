@@ -14,6 +14,7 @@ import { useState } from "react";
 export default function ResetPasswordForm() {
   // <========== Variables ==========>
   const router = useRouter();
+  const [disabled, setDisabled] = useState(false);
   const [failed, setFailed] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
   const [passwordsDontMatch, setPasswordsDontMatch] = useState(false);
@@ -177,6 +178,8 @@ export default function ResetPasswordForm() {
             </Stack>
 
             <Button
+              key={`${disabled}`}
+              disabled={disabled}
               variant="contained"
               type="submit"
               sx={{
