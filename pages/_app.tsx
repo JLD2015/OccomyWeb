@@ -1,9 +1,17 @@
 import { AppProps } from "next/app";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createStyles, createTheme, ThemeProvider } from "@mui/material/styles";
 import "../styles/globals.css";
 import { CssBaseline } from "@mui/material";
 
-const theme = createTheme({});
+const theme = createTheme({
+  components: {
+    MuiButton: createStyles({
+      root: {
+        transition: "color .01s",
+      },
+    }),
+  },
+});
 
 function App({ Component, pageProps }: AppProps) {
   return (
