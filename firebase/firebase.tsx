@@ -4,6 +4,7 @@ const firebaseConfig = require("./firebaseConfig.json");
 try {
   admin.initializeApp({
     credential: admin.credential.cert(firebaseConfig),
+    storageBucket: "occomy.appspot.com",
   });
   console.log("Firebase initialized.");
 } catch (error) {
