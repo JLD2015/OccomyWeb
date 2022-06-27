@@ -1,5 +1,6 @@
-import { AppProps } from "next/app";
+import admin from "firebase-admin";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { AppProps } from "next/app";
 import "../styles/globals.css";
 import { CssBaseline } from "@mui/material";
 
