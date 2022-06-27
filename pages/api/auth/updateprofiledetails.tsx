@@ -52,52 +52,53 @@ export default function updateProfileDetails(
     const phone = fields.phone;
 
     // First we validate the authorization token
-
-    setTimeout(() => {
-      console.log("World!");
-    }, 10000);
-
     admin
       .auth()
       .verifyIdToken(authorization)
       .then((decodedToken) => {
         const uid = decodedToken.uid;
 
-        // Upload the new profile picture
-        const uniqueIdentifier = uuid();
-        getStorage()
-          .bucket()
-          .upload(profilepicturepath, {
-            destination: "profilePictures/" + uniqueIdentifier,
-            gzip: true,
-            metadata: {
-              metadata: {
-                firebaseStorageDownloadTokens: uniqueIdentifier,
-              },
-              contentType: "image/jpg",
-              cacheControl: "public, max-age=31536000",
-            },
-          })
-          .then(() => {
-            console.log("Uploaded profile picture");
+        // Second we start the transaction
+        try {
+          admin.firestore().runTransaction(async (transaction) => {
+            // Upload the new profile picture
+            const uniqueIdentifier = uuid();
+            getStorage()
+              .bucket()
+              .upload(profilepicturepath, {
+                destination: "profilePictures/" + uniqueIdentifier,
+                gzip: true,
+                metadata: {
+                  metadata: {
+                    firebaseStorageDownloadTokens: uniqueIdentifier,
+                  },
+                  contentType: "image/jpg",
+                  cacheControl: "public, max-age=31536000",
+                },
+              })
+              .then(() => {
+                // Construct download url
+                const downloadUrl =
+                  "https://firebasestorage.googleapis.com:443/v0/b/occomy.appspot.com/o/profilePictures%2F" +
+                  uniqueIdentifier +
+                  "?alt=media&token=" +
+                  uniqueIdentifier;
+
+                // 5. Update the user's details
+
+                admin.firestore().collection("users").doc(uid).update({
+                  name: name,
+                  phoneNumber: phone,
+                  profilePhotoUrl: downloadUrl,
+                });
+
+                // 6. Trigger completion
+                return response.status(200).json({ status: "Success" });
+              });
           });
-
-        // Construct download url
-        const downloadUrl =
-          "https://firebasestorage.googleapis.com:443/v0/b/occomy.appspot.com/o/profilePictures%2F" +
-          uniqueIdentifier +
-          "?alt=media&token=" +
-          uniqueIdentifier;
-
-        // 5. Update the user's details
-        admin.firestore().collection("users").doc(uid).update({
-          name: name,
-          phoneNumber: phone,
-          profilePhotoUrl: downloadUrl,
-        });
-
-        // 6. Trigger completion
-        return response.status(200).json({ status: "Success" });
+        } catch (e) {
+          return response.status(200).json({ status: "Failed" });
+        }
       })
       .catch(() => {
         return response.status(200).json({ status: "Invalid token" });
