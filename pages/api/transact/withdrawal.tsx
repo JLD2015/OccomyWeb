@@ -2,7 +2,7 @@ import admin from "../../../firebase/firebase";
 import {
   addNotification,
   sendNotification,
-} from "../../../functions/SendNotification";
+} from "../../../functions/sendNotification";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default function processWithdrawal(
