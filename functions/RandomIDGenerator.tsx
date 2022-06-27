@@ -1,4 +1,4 @@
-export default function RandomIDGenerator(length: number) {
+export default function randomIDGenerator(length: number) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let result = "";
   for (let i = length; i > 0; --i) {

@@ -6,7 +6,7 @@ const ENCRYPTION_KEY = Buffer.from(
 );
 const IV_LENGTH = 16;
 
-export function encrypt(text) {
+export function encrypt(text: string) {
   let iv = crypto.randomBytes(IV_LENGTH);
   let cipher = crypto.createCipheriv(
     algorithm,
@@ -18,7 +18,7 @@ export function encrypt(text) {
   return iv.toString("hex") + ":" + encrypted.toString("hex");
 }
 
-export function decrypt(text) {
+export function decrypt(text: string) {
   let textParts = text.split(":");
   let iv = Buffer.from(textParts.shift(), "hex");
   let encryptedText = Buffer.from(textParts.join(":"), "hex");

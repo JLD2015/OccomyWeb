@@ -1,11 +1,10 @@
-import { encrypt } from "../../../functions/Cryptography";
+import { encrypt } from "../../../functions/cryptography";
 import { getStorage } from "firebase-admin/storage";
 import admin from "../../../firebase/firebase";
 import formidable from "formidable";
 import { NextApiRequest, NextApiResponse } from "next";
 import uuid from "uuid-v4";
-import RandomIDGenerator from "../../../functions/RandomIDGenerator";
-const fs = require("fs");
+import randomIDGenerator from "../../../functions/randomIDGenerator";
 
 export const config = {
   api: {
@@ -96,7 +95,7 @@ export default async function CreateAccount(
           uniqueIdentifier;
 
         // We need to generate a unique ID
-        var uniqueID = RandomIDGenerator(8);
+        var uniqueID = randomIDGenerator(8);
 
         const docRef = admin.firestore().collection("users").doc("depositIDs");
         docRef.get().then((doc) => {
@@ -110,7 +109,7 @@ export default async function CreateAccount(
             // If the document does exist then we need to update it
             const existingIDs = doc.data().depositIDs;
             while (uniqueID in existingIDs) {
-              uniqueID = RandomIDGenerator(8);
+              uniqueID = randomIDGenerator(8);
             }
 
             docRef.update({
