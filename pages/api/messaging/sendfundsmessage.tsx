@@ -243,7 +243,7 @@ export default function processWithdrawal(
         response.status(400).json({ status: "Failed" });
       }
     })
-    .catch((error) => {
+    .catch(() => {
       response.status(400).json({ status: "Invalid token" });
     });
 }
