@@ -1,12 +1,19 @@
 html {
   scroll-behavior: smooth;
+  overflow: auto;
 }
 
 body {
+  height: auto;
+  overflow: auto;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+.scrollable {
+  position: inherit;
 }
 
 a {

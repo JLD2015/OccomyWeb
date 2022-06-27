@@ -31,7 +31,7 @@ export default function Authentication() {
         sx={{
           backgroundImage: `url("/images/authenticationBackground.jpg")`,
           backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
+          backgroundSize: "cover"
         }}
       >
         {/* Occomy heading */}
