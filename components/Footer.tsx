@@ -78,7 +78,14 @@ export default function Footer() {
         </Stack>
         {/* End links to other pages */}
         {/* Copyright */}
-        <Typography sx={{ textAlign: "center", paddingBottom: 4 }}>
+        <Typography
+          sx={{
+            textAlign: "center",
+            paddingBottom: 4,
+            paddingLeft: 2,
+            paddingRight: 2,
+          }}
+        >
           Copyright © {new Date().getFullYear()}{" "}
           <strong>Occomy (Pty) Ltd.</strong> All Rights Reserved
         </Typography>
