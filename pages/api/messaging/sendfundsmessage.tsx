@@ -133,7 +133,7 @@ export default function processWithdrawal(
               admin.firestore().collection("transactions").doc(),
               {
                 amount: Number(amount),
-                merchantID: admin,
+                merchantID: recipientid,
                 merchantName: recipientData.name,
                 merchantProfilePhoto: recipientData.profilePhotoUrl,
                 transactionID: uniqueID,
