@@ -82,8 +82,8 @@ export default function Footer() {
           sx={{
             textAlign: "center",
             paddingBottom: 4,
-            paddingLeft: 2,
-            paddingRight: 2,
+            paddingLeft: 1,
+            paddingRight: 1,
           }}
         >
           Copyright © {new Date().getFullYear()}{" "}
