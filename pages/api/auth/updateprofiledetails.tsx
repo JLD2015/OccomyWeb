@@ -52,6 +52,11 @@ export default function updateProfileDetails(
     const phone = fields.phone;
 
     // First we validate the authorization token
+
+    setTimeout(() => {
+      console.log("World!");
+    }, 10000);
+
     admin
       .auth()
       .verifyIdToken(authorization)
