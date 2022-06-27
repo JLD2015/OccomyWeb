@@ -1,7 +1,7 @@
 import admin from "../../../firebase/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default function updateFinancialDetails(
+export default async function updateFinancialDetails(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
@@ -43,10 +43,11 @@ export default function updateFinancialDetails(
         .firestore()
         .collection("users")
         .doc(uid)
-        .update({ bankAccountNumber: bankaccountnumber, bankName: bankname });
-
-      // Third we trigger the callback
-      return response.status(200).json({ status: "Success" });
+        .update({ bankAccountNumber: bankaccountnumber, bankName: bankname })
+        .then(() => {
+          // Third we trigger the callback
+          return response.status(200).json({ status: "Success" });
+        });
     })
     .catch(() => {
       return response.status(400).json({ status: "Invalid token" });
