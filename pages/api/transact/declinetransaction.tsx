@@ -20,7 +20,7 @@ export default function declineTransaction(
   if (!body.transactionid) {
     return response
       .status(400)
-      .json({ status: "Please provide a valid amount" });
+      .json({ status: "Please provide a valid transactionID" });
   }
   const transactionid = body.transactionid;
 
