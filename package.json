@@ -21,6 +21,7 @@
     "lottie-web": "^5.9.4",
     "mailgun.js": "^7.0.2",
     "next": "^12.1.6",
+    "qrcode.react": "^3.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "uuid-v4": "^0.1.0"
