@@ -2,11 +2,8 @@ import { Grid, useTheme } from "@mui/material";
 import Footer from "../components/Footer";
 import Head from "next/head";
 import PaymentForm from "../components/PaymentForm";
-import { resourceLimits } from "worker_threads";
 
 export default function Payment({ data }) {
-  // <========== Variables ==========>
-  const theme = useTheme();
 
   // <========== Body ==========>
   return (
@@ -75,8 +72,8 @@ export async function getServerSideProps(context) {
     data.amount = Number(context.query.amount).toFixed(2);
     data.documentID = result.documentID;
     data.transactionID = result.transactionID;
-    data.merchantProfilePhoto = "AAAA";
-    data.merchantName = "BBBB";
+    data.merchantProfilePhoto = result.merchantProfilePhoto;
+    data.merchantName = result.merchantName;
   } else {
     console.log("Could not create transaction");
   }

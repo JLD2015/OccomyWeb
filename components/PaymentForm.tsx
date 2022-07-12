@@ -1,3 +1,4 @@
+import admin from "../firebase/firebase";
 import {
   Avatar,
   Button,
@@ -12,6 +13,7 @@ import {
 import Image from "next/image";
 import { Box, Container } from "@mui/system";
 import { QRCodeSVG } from "qrcode.react";
+import { useEffect } from "react";
 
 // <========== Login Section ==========>
 export default function PaymentForm(props) {
