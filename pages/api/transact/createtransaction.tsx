@@ -113,6 +113,8 @@ export default async function createTransaction(
       status: "Success",
       documentID: res2.id,
       transactionID: uniqueID,
+      merchantProfilePhoto: merchantPhotoURL,
+      merchantName: merchantName,
     });
   }
 }
