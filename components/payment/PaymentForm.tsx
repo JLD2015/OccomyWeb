@@ -56,7 +56,7 @@ export default function PaymentForm(props) {
       }
     );
     return unsubscribe;
-  }, [props, setTransactionStatus]);
+  }, [props, setTransactionStatus, router]);
 
   // <========== Body ==========>
   return (
