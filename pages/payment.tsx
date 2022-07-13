@@ -1,10 +1,9 @@
-import { Grid, useTheme } from "@mui/material";
+import { Grid } from "@mui/material";
 import Footer from "../components/Footer";
 import Head from "next/head";
-import PaymentForm from "../components/PaymentForm";
+import PaymentForm from "../components/payment/PaymentForm";
 
 export default function Payment({ data }) {
-
   // <========== Body ==========>
   return (
     <>
@@ -44,6 +43,7 @@ export async function getServerSideProps(context) {
     transactionID?: string;
     merchantProfilePhoto?: string;
     merchantName?: string;
+    redirectURL?: string;
   };
 
   const data: PaymentRequest = {};
@@ -74,6 +74,7 @@ export async function getServerSideProps(context) {
     data.transactionID = result.transactionID;
     data.merchantProfilePhoto = result.merchantProfilePhoto;
     data.merchantName = result.merchantName;
+    data.redirectURL = context.query.redirectURL;
   } else {
     console.log("Could not create transaction");
   }
