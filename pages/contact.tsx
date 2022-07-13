@@ -101,7 +101,6 @@ export default function Contact() {
           "https://www.google.com/recaptcha/api.js?render=" +
           process.env.NEXT_PUBLIC_RECAPTCHA_SITEKEY
         }
-        strategy="beforeInteractive"
       />
 
       {/* Body */}
