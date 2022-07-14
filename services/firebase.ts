@@ -1,11 +1,6 @@
 import { initializeApp } from "firebase/app";
-import {
-  collection,
-  doc,
-  getFirestore,
-  onSnapshot,
-  query,
-} from "firebase/firestore";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -18,8 +13,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Used for monitoring transaction status
 export const monitorTransaction = (documentID: string, snapshot, error) => {
   const docRef = doc(db, "transactions", documentID);
   return onSnapshot(docRef, snapshot, error);

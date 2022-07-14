@@ -1,4 +1,5 @@
 import * as FirebaseService from "../../services/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import {
   Avatar,
   Button,
@@ -17,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import DeclinedAnimation from "./DeclinedAnimation";
 import ApprovedAnimation from "./ApprovedAnimation";
+import Script from "next/script";
 
 // <========== Login Section ==========>
 export default function PaymentForm(props) {
@@ -24,7 +26,90 @@ export default function PaymentForm(props) {
   const theme = useTheme();
   const qrCodeValue = `{\"transactionID\": \"${props.documentID}\"}`;
   const [transactionStatus, setTransactionStatus] = useState("pending");
+  const [prompt, setPrompt] = useState("");
   const router = useRouter();
+
+  // <========== Functions ==========>
+  const handleSubmit = async (event) => {
+    // Stop form from submitting and refreshing page
+    event.preventDefault();
+
+    // Get a reCAPTCHA token
+    window.grecaptcha.ready(() => {
+      window.grecaptcha
+        .execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITEKEY, {
+          action: "submit",
+        })
+        .then(async (token) => {
+          const data = {
+            token: token,
+            email: event.target.email.value,
+            password: event.target.password.value,
+          };
+          const JSONdata = JSON.stringify(data);
+
+          const endpoint = "/api/services/verifyrecaptcha";
+          const options = {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSONdata,
+          };
+
+          const response = await fetch(endpoint, options);
+          const result = await response.json();
+
+          if (result.status === "success") {
+            signInWithEmailAndPassword(
+              FirebaseService.auth,
+              data.email,
+              data.password
+            )
+              .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+
+                // Store the necesary details in session storage
+                sessionStorage.setItem("uid", user.uid);
+
+                // We can now move over to the payment approval page
+                router.replace("/approvetransaction");
+              })
+              .catch((error) => {
+                const errorMessage = error.message;
+                console.log(errorMessage);
+
+                // If the user does not exist
+                if (errorMessage === "Firebase: Error (auth/user-not-found).") {
+                  setPrompt("User does not exist");
+                  var resetForm = document.getElementById(
+                    "login-form"
+                  ) as HTMLFormElement;
+                  resetForm.reset();
+                }
+
+                // If the password is incorrect
+                if (errorMessage === "Firebase: Error (auth/wrong-password).") {
+                  setPrompt("Incorrect password");
+                  var resetForm = document.getElementById(
+                    "login-form"
+                  ) as HTMLFormElement;
+                  resetForm.reset();
+                }
+              });
+          } else {
+            setPrompt("We think you're a robot, please try again");
+
+            // Clear the form
+            var resetForm = document.getElementById(
+              "login-form"
+            ) as HTMLFormElement;
+            resetForm.reset();
+          }
+        });
+    });
+  };
 
   // <========== Page Loads ==========>
   useEffect(() => {
@@ -61,6 +146,14 @@ export default function PaymentForm(props) {
   // <========== Body ==========>
   return (
     <>
+      {/* Scripts */}
+      <Script
+        src={
+          "https://www.google.com/recaptcha/api.js?render=" +
+          process.env.NEXT_PUBLIC_RECAPTCHA_SITEKEY
+        }
+      />
+
       <Container>
         {/* Column 1 -> Forms outside of card */}
         <Grid
@@ -72,6 +165,7 @@ export default function PaymentForm(props) {
             backgroundColor: "white",
             borderRadius: "25px",
             p: 2,
+            boxShadow: 2,
           }}
         >
           {/* Row 1.1 -> Top row containing heading */}
@@ -262,8 +356,8 @@ export default function PaymentForm(props) {
               </Box>
 
               <form
-                action="api/auth/login"
-                method="post"
+                id="login-form"
+                onSubmit={handleSubmit}
                 style={{ width: "100%" }}
               >
                 <Stack direction="column" alignItems="center" spacing={2}>
@@ -308,6 +402,11 @@ export default function PaymentForm(props) {
                   >
                     Log in
                   </Button>
+                  {prompt !== "" && (
+                    <>
+                      <Typography sx={{ color: "red" }}>{prompt}</Typography>
+                    </>
+                  )}
                 </Stack>
               </form>
             </Grid>

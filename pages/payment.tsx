@@ -20,9 +20,7 @@ export default function Payment({ data }) {
         alignItems="center"
         height={"100vh"}
         sx={{
-          backgroundImage: `url("/images/paymentBackground.jpg")`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
+          backgroundColor: "#f5f5f5",
         }}
       >
         <PaymentForm {...data} />
