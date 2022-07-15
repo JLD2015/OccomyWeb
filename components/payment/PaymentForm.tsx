@@ -4,6 +4,7 @@ import {
   Avatar,
   Button,
   Chip,
+  CircularProgress,
   Divider,
   Grid,
   Stack,
@@ -28,11 +29,15 @@ export default function PaymentForm(props) {
   const [transactionStatus, setTransactionStatus] = useState("pending");
   const [prompt, setPrompt] = useState("");
   const router = useRouter();
+  const [progressIndicator, setProgressIndicator] = useState(false);
 
   // <========== Functions ==========>
   const handleSubmit = async (event) => {
     // Stop form from submitting and refreshing page
     event.preventDefault();
+
+    // Start the progress spinner
+    setProgressIndicator(true);
 
     // Get a reCAPTCHA token
     window.grecaptcha.ready(() => {
@@ -66,15 +71,25 @@ export default function PaymentForm(props) {
               data.email,
               data.password
             )
-              .then((userCredential) => {
+              .then((userCredential: any) => {
                 // Signed in
                 const user = userCredential.user;
 
                 // Store the necesary details in session storage
-                sessionStorage.setItem("uid", user.uid);
+
+                localStorage.setItem("accessToken", user.accessToken);
+                localStorage.setItem("userName", user.displayName);
+                localStorage.setItem("amount", props.amount);
+                localStorage.setItem(
+                  "merchantProfilePhotoURL",
+                  props.merchantProfilePhoto
+                );
+                localStorage.setItem("merchantName", props.merchantName);
+                localStorage.setItem("redirectURL", props.redirectURL);
+                localStorage.setItem("transactionID", props.documentID);
 
                 // We can now move over to the payment approval page
-                router.replace("/approvetransaction");
+                router.replace("/approval");
               })
               .catch((error) => {
                 const errorMessage = error.message;
@@ -400,8 +415,13 @@ export default function PaymentForm(props) {
                       },
                     }}
                   >
-                    Log in
+                    {!progressIndicator && <>Log in</>}
+
+                    {progressIndicator && (
+                      <CircularProgress size={35} sx={{ color: "white" }} />
+                    )}
                   </Button>
+
                   {prompt !== "" && (
                     <>
                       <Typography sx={{ color: "red" }}>{prompt}</Typography>

@@ -31,20 +31,28 @@ export default function declineTransaction(
     .then(() => {
       // Run transaction
       try {
-        admin.firestore().runTransaction(async (transaction) => {
-          transaction.update(
-            admin.firestore().collection("transactions").doc(transactionid),
-            {
-              status: "declined",
-              date: admin.firestore.FieldValue.serverTimestamp(),
-            }
-          );
-
-          return response.status(200).json({
-            status: "Success",
+        admin
+          .firestore()
+          .runTransaction(async (transaction) => {
+            transaction.update(
+              admin.firestore().collection("transactions").doc(transactionid),
+              {
+                status: "declined",
+                date: admin.firestore.FieldValue.serverTimestamp(),
+              }
+            );
+          })
+          .then(() => {
+            return response.status(200).json({
+              status: "Success",
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            return response.status(400).json({ status: "Failed" });
           });
-        });
       } catch (e) {
+        console.log("I did come in here");
         return response.status(400).json({ status: "Failed" });
       }
     })

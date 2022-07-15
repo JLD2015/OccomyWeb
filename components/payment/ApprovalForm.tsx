@@ -1,10 +1,10 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import ForwardIcon from "@mui/icons-material/Forward";
 import {
   Avatar,
   Button,
   Chip,
+  CircularProgress,
   Container,
   Divider,
   Grid,
@@ -14,11 +14,195 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import Image from "next/image";
-import { Scale } from "@mui/icons-material";
+import { useState } from "react";
+import ApprovalDeclinedLarge from "./ApprovalDeclinedLarge";
+import { useRouter } from "next/router";
+import ApprovalAcceptedLarge from "./ApprovalAcceptedLarge";
+import ApprovalDeclinedSmall from "./ApprovalDeclinedSmall";
+import ApprovalAcceptedSmall from "./ApprovalAcceptedSmall";
+import ApprovalErrorSmall from "./ApprovalErrorSmall";
+import ApprovalErrorLocationSmall from "./ApprovalErrorLocationSmall";
+import ApprovalErrorLocationLarge from "./ApprovalErrorLocationLarge";
+import ApprovalErrorLarge from "./ApprovalErrorLarge";
 
 export default function ApprovalForm() {
   // <========== Variables ==========>
+  const ISSERVER = typeof window === "undefined";
   const theme = useTheme();
+  const [transactionDeclined, setTransactionDeclined] = useState(false);
+  const [transactionApproved, setTransactionApproved] = useState(false);
+  const [transactionError, setTransactionError] = useState(false);
+  const [progressIndicatorApprove, setProgressIndicatorApprove] =
+    useState(false);
+  const [progressIndicatorDecline, setProgressIndicatorDecline] =
+    useState(false);
+  const [approvalErrorLocation, setApprovalErrorLocation] = useState(false);
+  const router = useRouter();
+
+  // <========== Functions ==========>
+  const declineClicked = async () => {
+    // First we start the progress spinner
+    setProgressIndicatorDecline(true);
+
+    // First we call the API to decline the transaction
+
+    const data = {
+      transactionid: localStorage.getItem("transactionID"),
+    };
+    const JSONdata = JSON.stringify(data);
+
+    // Make API call
+    const endpoint = "/api/transact/declinetransaction";
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("accessToken"),
+      },
+      body: JSONdata,
+    };
+
+    const response = await fetch(endpoint, options);
+    const result = await response.json();
+
+    if (result.status === "Success") {
+      setTransactionDeclined(true);
+
+      // Stop the progeress indicator
+      setProgressIndicatorDecline(false);
+
+      //Redirect back to the merchant's website
+      setTimeout(function () {
+        const redirectString = `${localStorage.getItem(
+          "redirectURL"
+        )}?status=declined`;
+        router.replace(redirectString);
+
+        // Clear the local storage
+        localStorage.clear();
+      }, 5000);
+    } else {
+      console.log(result);
+      setTransactionError(true);
+
+      // Stop the progeress indicator
+      setProgressIndicatorDecline(false);
+
+      // Redirect back to the merchant's website
+      setTimeout(function () {
+        const redirectString = `${localStorage.getItem(
+          "redirectURL"
+        )}?status=declined`;
+        router.replace(redirectString);
+        // Clear the local storage
+        localStorage.clear();
+      }, 5000);
+    }
+  };
+
+  const approveClicked = async () => {
+    // First we start the progress indicator
+    setProgressIndicatorApprove(true);
+
+    // First we need to get the user's location
+    if (window.navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async function (position) {
+          const { latitude, longitude } = position.coords;
+
+          // First we call the API to approve the transaction
+          const data = {
+            transactionid: localStorage.getItem("transactionID"),
+            latitude: latitude,
+            longitude: longitude,
+          };
+          const JSONdata = JSON.stringify(data);
+
+          // Make API call
+          const endpoint = "/api/transact/approvetransaction";
+          const options = {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: localStorage.getItem("accessToken"),
+            },
+            body: JSONdata,
+          };
+
+          const response = await fetch(endpoint, options);
+          const result = await response.json();
+
+          if (result.status === "Success") {
+            setTransactionApproved(true);
+
+            // Stop the progeress indicator
+            setProgressIndicatorApprove(false);
+
+            //Redirect back to the merchant's website
+            setTimeout(function () {
+              const redirectString = `${localStorage.getItem(
+                "redirectURL"
+              )}?status=approved`;
+              router.replace(redirectString);
+              // Clear the local storage
+              localStorage.clear();
+            }, 5000);
+          } else {
+            console.log(result);
+            setTransactionError(true);
+
+            // Stop the progeress indicator
+            setProgressIndicatorApprove(false);
+
+            // Redirect back to the merchant's website
+            setTimeout(function () {
+              const redirectString = `${localStorage.getItem(
+                "redirectURL"
+              )}?status=declined`;
+              router.replace(redirectString);
+              // Clear the local storage
+              localStorage.clear();
+            }, 5000);
+          }
+        },
+        async function () {
+          console.log("Location permission blocked");
+
+          setApprovalErrorLocation(true);
+
+          // Stop the progeress indicator
+          setProgressIndicatorApprove(false);
+
+          // Redirect back to the merchant's website
+          setTimeout(function () {
+            const redirectString = `${localStorage.getItem(
+              "redirectURL"
+            )}?status=declined`;
+            router.replace(redirectString);
+            // Clear the local storage
+            localStorage.clear();
+          }, 5000);
+        }
+      );
+    } else {
+      console.log("Could not get user's location");
+
+      setTransactionError(true);
+
+      // Stop the progeress indicator
+      setProgressIndicatorApprove(false);
+
+      // Redirect back to the merchant's website
+      setTimeout(function () {
+        const redirectString = `${localStorage.getItem(
+          "redirectURL"
+        )}?status=declined`;
+        router.replace(redirectString);
+        // Clear the local storage
+        localStorage.clear();
+      }, 5000);
+    }
+  };
 
   // <========== Body ==========>
   return (
@@ -92,7 +276,7 @@ export default function ApprovalForm() {
                 },
               }}
             >
-              Hi, Jon-Louis Dalton
+              {`Hi, ${localStorage.getItem("userName")}`}
             </Typography>
             <Typography
               sx={{
@@ -129,105 +313,187 @@ export default function ApprovalForm() {
                 my: 3,
               }}
             >
-              <Grid
-                container
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
-                sx={{
-                  textAlign: "center",
-                  display: { xs: "block", md: "none" },
-                }}
-              >
-                <Typography sx={{ fontSize: 30, fontWeight: 600 }}>
-                  R200.00
-                </Typography>
+              {/* The small section of the screen starts here */}
+              {transactionDeclined === false &&
+                transactionApproved === false &&
+                transactionError === false &&
+                approvalErrorLocation === false && (
+                  <>
+                    <Grid
+                      container
+                      direction="column"
+                      justifyContent="center"
+                      alignItems="center"
+                      sx={{
+                        textAlign: "center",
+                        display: { xs: "block", md: "none" },
+                      }}
+                    >
+                      <Typography sx={{ fontSize: 30, fontWeight: 600 }}>
+                        {`R${Number(localStorage.getItem("amount")).toFixed(
+                          2
+                        )}`}
+                      </Typography>
 
-                <Box width={"100%"} sx={{ py: 1 }}>
-                  <Divider textAlign="center">
-                    <Chip label="TO" />
-                  </Divider>
-                </Box>
+                      <Box width={"100%"} sx={{ py: 1 }}>
+                        <Divider textAlign="center">
+                          <Chip label="TO" />
+                        </Divider>
+                      </Box>
 
-                <Stack
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={2}
-                  width={"100%"}
-                >
-                  <Avatar
-                    src="https://cdn.shopify.com/s/files/1/2836/2982/products/pic10_large.jpg?v=1529434190"
-                    sx={{
-                      [theme.breakpoints.up("md")]: {
-                        width: 260,
-                        height: 260,
-                      },
-                      [theme.breakpoints.down("md")]: {
-                        width: 120,
-                        height: 120,
-                      },
-                    }}
-                  />
-                  <Typography
-                    sx={{ fontSize: 26, fontWeight: 600, textAlign: "center" }}
-                  >
-                    Zimbi Books
-                  </Typography>
-                </Stack>
-              </Grid>
+                      <Stack
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center"
+                        spacing={2}
+                        width={"100%"}
+                      >
+                        <Avatar
+                          src={localStorage.getItem("merchantProfilePhotoURL")}
+                          sx={{
+                            [theme.breakpoints.up("md")]: {
+                              width: 260,
+                              height: 260,
+                            },
+                            [theme.breakpoints.down("md")]: {
+                              width: 120,
+                              height: 120,
+                            },
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            fontSize: 26,
+                            fontWeight: 600,
+                            textAlign: "center",
+                          }}
+                        >
+                          {localStorage.getItem("merchantName")}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </>
+                )}
 
-              <Box sx={{ width: "100%", display: { xs: "none", md: "flex" } }}>
-                <Grid
-                  item
-                  container
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  md={5.5}
-                >
-                  <Typography sx={{ fontSize: 40, fontWeight: 600 }}>
-                    Pay
-                  </Typography>
-                  <Typography sx={{ fontSize: 60, fontWeight: 600 }}>
-                    R200.00
-                  </Typography>
-                </Grid>
+              {transactionDeclined === true && transactionApproved === false && (
+                <>
+                  <ApprovalDeclinedSmall />
+                </>
+              )}
 
-                <Grid
-                  item
-                  container
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  md={1}
-                >
-                  <Divider orientation="vertical" textAlign="center">
-                    <Chip label="TO" />
-                  </Divider>
-                </Grid>
+              {transactionDeclined === false && transactionApproved === true && (
+                <>
+                  <ApprovalAcceptedSmall />
+                </>
+              )}
 
-                <Grid
-                  item
-                  container
-                  direction="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  md={5.5}
-                >
-                  <Avatar
-                    src="https://cdn.shopify.com/s/files/1/2836/2982/products/pic10_large.jpg?v=1529434190"
-                    sx={{
-                      width: 250,
-                      height: 250,
-                    }}
-                  />
-                  <Typography sx={{ fontSize: 26, fontWeight: 600, py: 2 }}>
-                    Zimbi Books
-                  </Typography>
-                </Grid>
-              </Box>
+              {transactionError === true && (
+                <>
+                  <ApprovalErrorSmall />
+                </>
+              )}
+
+              {approvalErrorLocation && (
+                <>
+                  <ApprovalErrorLocationSmall />
+                </>
+              )}
+              {/* The small section of the screen ends here */}
+
+              {/* The large section of the screen starts here */}
+              {transactionDeclined === false &&
+                transactionApproved === false &&
+                approvalErrorLocation === false &&
+                transactionError === false && (
+                  <>
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: { xs: "none", md: "flex" },
+                      }}
+                    >
+                      <Grid
+                        item
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        md={5.5}
+                      >
+                        <Typography sx={{ fontSize: 40, fontWeight: 600 }}>
+                          Pay
+                        </Typography>
+                        <Typography sx={{ fontSize: 60, fontWeight: 600 }}>
+                          {`R${Number(localStorage.getItem("amount")).toFixed(
+                            2
+                          )}`}
+                        </Typography>
+                      </Grid>
+
+                      <Grid
+                        item
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        md={1}
+                      >
+                        <Divider orientation="vertical" textAlign="center">
+                          <Chip label="TO" />
+                        </Divider>
+                      </Grid>
+
+                      <Grid
+                        item
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        md={5.5}
+                      >
+                        <Avatar
+                          src={localStorage.getItem("merchantProfilePhotoURL")}
+                          sx={{
+                            width: 250,
+                            height: 250,
+                          }}
+                        />
+                        <Typography
+                          sx={{ fontSize: 26, fontWeight: 600, py: 2 }}
+                        >
+                          {localStorage.getItem("merchantName")}
+                        </Typography>
+                      </Grid>
+                    </Box>
+                  </>
+                )}
+
+              {transactionDeclined === true && transactionApproved === false && (
+                <>
+                  <ApprovalDeclinedLarge />
+                </>
+              )}
+
+              {transactionDeclined === false && transactionApproved === true && (
+                <>
+                  <ApprovalAcceptedLarge />
+                </>
+              )}
+
+              {approvalErrorLocation && (
+                <>
+                  <ApprovalErrorLocationLarge />
+                </>
+              )}
+
+              {transactionError && (
+                <>
+                  <ApprovalErrorLarge />
+                </>
+              )}
+              {/* The large section of the screen ends here */}
             </Grid>
+
             {/* End row 1.2.1 -> Contains avatars */}
 
             {/* Row 1.2.2 -> Contains buttons  */}
@@ -256,20 +522,25 @@ export default function ApprovalForm() {
                 }}
               >
                 <Button
+                  onClick={declineClicked}
                   fullWidth
                   variant="contained"
                   color="error"
                   startIcon={
-                    <ClearIcon
-                      sx={{
-                        [theme.breakpoints.down("md")]: {
-                          transform: "scale(1.2)",
-                        },
-                        [theme.breakpoints.up("md")]: {
-                          transform: "scale(1.6)",
-                        },
-                      }}
-                    />
+                    !progressIndicatorDecline && (
+                      <>
+                        <ClearIcon
+                          sx={{
+                            [theme.breakpoints.down("md")]: {
+                              transform: "scale(1.2)",
+                            },
+                            [theme.breakpoints.up("md")]: {
+                              transform: "scale(1.6)",
+                            },
+                          }}
+                        />
+                      </>
+                    )
                   }
                   sx={{
                     py: 2,
@@ -277,19 +548,27 @@ export default function ApprovalForm() {
                     borderRadius: 100,
                   }}
                 >
-                  <Typography
-                    sx={{
-                      [theme.breakpoints.up("md")]: {
-                        fontSize: 24,
-                      },
-                      [theme.breakpoints.down("md")]: {
-                        fontSize: 18,
-                      },
-                      fontWeight: 600,
-                    }}
-                  >
-                    Decline
-                  </Typography>
+                  {!progressIndicatorDecline && (
+                    <>
+                      <Typography
+                        sx={{
+                          [theme.breakpoints.up("md")]: {
+                            fontSize: 24,
+                          },
+                          [theme.breakpoints.down("md")]: {
+                            fontSize: 18,
+                          },
+                          fontWeight: 600,
+                        }}
+                      >
+                        Decline
+                      </Typography>
+                    </>
+                  )}
+
+                  {progressIndicatorDecline && (
+                    <CircularProgress size={35} sx={{ color: "white" }} />
+                  )}
                 </Button>
               </Grid>
 
@@ -309,39 +588,52 @@ export default function ApprovalForm() {
                 }}
               >
                 <Button
+                  onClick={approveClicked}
                   fullWidth
                   variant="contained"
                   color="success"
                   startIcon={
-                    <CheckIcon
-                      sx={{
-                        [theme.breakpoints.down("md")]: {
-                          transform: "scale(1.2)",
-                        },
-                        [theme.breakpoints.up("md")]: {
-                          transform: "scale(1.6)",
-                        },
-                      }}
-                    />
+                    !progressIndicatorApprove && (
+                      <>
+                        <CheckIcon
+                          sx={{
+                            [theme.breakpoints.down("md")]: {
+                              transform: "scale(1.2)",
+                            },
+                            [theme.breakpoints.up("md")]: {
+                              transform: "scale(1.6)",
+                            },
+                          }}
+                        />
+                      </>
+                    )
                   }
                   sx={{
                     py: 2,
                     borderRadius: 100,
                   }}
                 >
-                  <Typography
-                    sx={{
-                      [theme.breakpoints.up("md")]: {
-                        fontSize: 24,
-                      },
-                      [theme.breakpoints.down("md")]: {
-                        fontSize: 18,
-                      },
-                      fontWeight: 600,
-                    }}
-                  >
-                    Approve
-                  </Typography>
+                  {!progressIndicatorApprove && (
+                    <>
+                      <Typography
+                        sx={{
+                          [theme.breakpoints.up("md")]: {
+                            fontSize: 24,
+                          },
+                          [theme.breakpoints.down("md")]: {
+                            fontSize: 18,
+                          },
+                          fontWeight: 600,
+                        }}
+                      >
+                        Approve
+                      </Typography>
+                    </>
+                  )}
+
+                  {progressIndicatorApprove && (
+                    <CircularProgress size={35} sx={{ color: "white" }} />
+                  )}
                 </Button>
               </Grid>
             </Grid>
