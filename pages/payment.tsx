@@ -2,8 +2,19 @@ import { Grid } from "@mui/material";
 import Footer from "../components/Footer";
 import Head from "next/head";
 import PaymentForm from "../components/payment/PaymentForm";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Payment({ data }) {
+  // <========== Variables ==========>
+  const router = useRouter();
+
+  // <========== Page Loads ==========>
+  useEffect(() => {
+    router.query.transactionID = data.documentID;
+    router.push(router);
+  }, [data, router]);
+
   // <========== Body ==========>
   return (
     <>
