@@ -167,7 +167,7 @@ export default function PaymentForm() {
     setAmount(localStorage.getItem("amount"));
     setMerchantName(localStorage.getItem("merchantName"));
     setMerchantProfilePhotoURL(localStorage.getItem("merchantProfilePhotoURL"));
-    setTransactionID(localStorage.getItem("documentID"));
+    setTransactionID(localStorage.getItem("transactionID"));
     setQrCodeValue(
       `{\"transactionID\": \"${localStorage.getItem("documentID")}\"}`
     );
