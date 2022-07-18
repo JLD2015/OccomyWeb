@@ -9,6 +9,10 @@
           {
             "/": "/payment",
             "comment": "Payment page redirects to approval page in app if present"
+          },
+          {
+            "/": "/*",
+            "comment": "Lets try and match anything"
           }
         ]
       }
