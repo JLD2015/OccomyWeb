@@ -9,7 +9,7 @@
           {
             "/": "/payment",
             "?": {
-              "documentID": "?*"
+              "amount": "?*"
             },
             "comment": "Payment page redirects to approval page in app if present"
           }
