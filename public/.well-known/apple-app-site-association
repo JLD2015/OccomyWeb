@@ -5,15 +5,7 @@
         "appIDs": [
           "838HD9T5J5.com.occomy.Occomy"
         ],
-        "components": [
-          {
-            "/": "/payment",
-            "?": {
-              "transactionID": "?*"
-            },
-            "comment": "Payment page redirects to approval page in app if present"
-          }
-        ]
+        "components": []
       }
     ]
   },
