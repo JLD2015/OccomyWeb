@@ -22,14 +22,20 @@ import ApprovedAnimation from "./ApprovedAnimation";
 import Script from "next/script";
 
 // <========== Login Section ==========>
-export default function PaymentForm(props) {
+export default function PaymentForm() {
   // <========== Variables ==========>
   const theme = useTheme();
-  const qrCodeValue = `{\"transactionID\": \"${props.documentID}\"}`;
+  const [qrCodeValue, setQrCodeValue] = useState("");
   const [transactionStatus, setTransactionStatus] = useState("pending");
   const [prompt, setPrompt] = useState("");
   const router = useRouter();
   const [progressIndicator, setProgressIndicator] = useState(false);
+
+  // Used for accessing local variables
+  const [merchantProfilePhotoURL, setMerchantProfilePhotoURL] = useState("");
+  const [merchantName, setMerchantName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [transactionID, setTransactionID] = useState("");
 
   // <========== Functions ==========>
   const handleSubmit = async (event) => {
@@ -76,17 +82,8 @@ export default function PaymentForm(props) {
                 const user = userCredential.user;
 
                 // Store the necesary details in session storage
-
                 localStorage.setItem("accessToken", user.accessToken);
                 localStorage.setItem("userName", user.displayName);
-                localStorage.setItem("amount", props.amount);
-                localStorage.setItem(
-                  "merchantProfilePhotoURL",
-                  props.merchantProfilePhoto
-                );
-                localStorage.setItem("merchantName", props.merchantName);
-                localStorage.setItem("redirectURL", props.redirectURL);
-                localStorage.setItem("transactionID", props.documentID);
 
                 // We can now move over to the payment approval page
                 router.replace("/approval");
@@ -132,7 +129,7 @@ export default function PaymentForm(props) {
   // <========== Page Loads ==========>
   useEffect(() => {
     const unsubscribe = FirebaseService.monitorTransaction(
-      props.documentID,
+      localStorage.getItem("documentID"),
       (querySnapshot) => {
         const transactionStatus = querySnapshot.data().status;
         if (transactionStatus == "approved") {
@@ -140,7 +137,9 @@ export default function PaymentForm(props) {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${props.redirectURL}?status=approved`;
+            const redirectString = `${localStorage.getItem(
+              "redirectURL"
+            )}?status=approved`;
             router.replace(redirectString);
           }, 5000);
         }
@@ -149,7 +148,9 @@ export default function PaymentForm(props) {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${props.redirectURL}?status=declined`;
+            const redirectString = `${localStorage.getItem(
+              "redirectURL"
+            )}?status=declined`;
             router.replace(redirectString);
           }, 5000);
         }
@@ -159,7 +160,18 @@ export default function PaymentForm(props) {
       }
     );
     return unsubscribe;
-  }, [props, setTransactionStatus, router]);
+  }, [setTransactionStatus, router]);
+
+  // Get values from local storage
+  useEffect(() => {
+    setAmount(localStorage.getItem("amount"));
+    setMerchantName(localStorage.getItem("merchantName"));
+    setMerchantProfilePhotoURL(localStorage.getItem("merchantProfilePhotoURL"));
+    setTransactionID(localStorage.getItem("documentID"));
+    setQrCodeValue(
+      `{\"transactionID\": \"${localStorage.getItem("documentID")}\"}`
+    );
+  }, []);
 
   // <========== Body ==========>
   return (
@@ -250,7 +262,7 @@ export default function PaymentForm(props) {
               md={5}
             >
               <Avatar
-                src={props.merchantProfilePhoto}
+                src={merchantProfilePhotoURL}
                 sx={{
                   [theme.breakpoints.up("md")]: {
                     width: 260,
@@ -279,7 +291,7 @@ export default function PaymentForm(props) {
                     },
                   }}
                 >
-                  {props.merchantName}
+                  {merchantName}
                 </Typography>
                 <Typography
                   sx={{
@@ -307,7 +319,7 @@ export default function PaymentForm(props) {
                   pb: 1,
                 }}
               >
-                R{props.amount}
+                R{amount}
               </Typography>
             </Grid>
             {/* End column 1.2.1 -> Left column in row */}
@@ -345,7 +357,7 @@ export default function PaymentForm(props) {
                     </Typography>
                     <QRCodeSVG value={qrCodeValue} size={200} />
                     <Typography sx={{ fontSize: 20, fontWeight: 600, pt: 1 }}>
-                      {props.transactionID}
+                      {transactionID}
                     </Typography>
                   </>
                 )}
