@@ -141,7 +141,7 @@ export default function PaymentForm() {
               "redirectURL"
             )}?status=approved`;
             router.replace(redirectString);
-          }, 3000);
+          }, 2000);
         }
         if (transactionStatus == "declined") {
           setTransactionStatus("declined");
@@ -152,7 +152,7 @@ export default function PaymentForm() {
               "redirectURL"
             )}?status=declined`;
             router.replace(redirectString);
-          }, 5000);
+          }, 2000);
         }
       },
       (error) => {
