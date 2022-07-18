@@ -8,6 +8,9 @@
         "components": [
           {
             "/": "/payment",
+            "?": {
+              "documentID": "?*"
+            },
             "comment": "Payment page redirects to approval page in app if present"
           }
         ]
