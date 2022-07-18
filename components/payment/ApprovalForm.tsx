@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ApprovalDeclinedLarge from "./ApprovalDeclinedLarge";
 import { useRouter } from "next/router";
 import ApprovalAcceptedLarge from "./ApprovalAcceptedLarge";
@@ -27,8 +27,9 @@ import ApprovalErrorLarge from "./ApprovalErrorLarge";
 
 export default function ApprovalForm() {
   // <========== Variables ==========>
-  const ISSERVER = typeof window === "undefined";
   const theme = useTheme();
+
+  // Used for changing screen based on transaction status
   const [transactionDeclined, setTransactionDeclined] = useState(false);
   const [transactionApproved, setTransactionApproved] = useState(false);
   const [transactionError, setTransactionError] = useState(false);
@@ -38,6 +39,12 @@ export default function ApprovalForm() {
     useState(false);
   const [approvalErrorLocation, setApprovalErrorLocation] = useState(false);
   const router = useRouter();
+
+  // Used for accessing local variables
+  const [merchantProfilePhotoURL, setMerchantProfilePhotoURL] = useState("");
+  const [merchantName, setMerchantName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [userName, setUserName] = useState("");
 
   // <========== Functions ==========>
   const declineClicked = async () => {
@@ -204,6 +211,16 @@ export default function ApprovalForm() {
     }
   };
 
+  // <========== Page Loads ==========>
+
+  // Get values from local storage
+  useEffect(() => {
+    setAmount(Number(localStorage.getItem("amount")).toFixed(2));
+    setMerchantName(localStorage.getItem("merchantName"));
+    setMerchantProfilePhotoURL(localStorage.getItem("merchantProfilePhotoURL"));
+    setUserName(localStorage.getItem("userName"));
+  }, []);
+
   // <========== Body ==========>
   return (
     <>
@@ -276,7 +293,7 @@ export default function ApprovalForm() {
                 },
               }}
             >
-              {`Hi, ${localStorage.getItem("userName")}`}
+              {`Hi, ${userName}`}
             </Typography>
             <Typography
               sx={{
@@ -330,9 +347,7 @@ export default function ApprovalForm() {
                       }}
                     >
                       <Typography sx={{ fontSize: 30, fontWeight: 600 }}>
-                        {`R${Number(localStorage.getItem("amount")).toFixed(
-                          2
-                        )}`}
+                        {`R${amount}`}
                       </Typography>
 
                       <Box width={"100%"} sx={{ py: 1 }}>
@@ -349,7 +364,7 @@ export default function ApprovalForm() {
                         width={"100%"}
                       >
                         <Avatar
-                          src={localStorage.getItem("merchantProfilePhotoURL")}
+                          src={merchantProfilePhotoURL}
                           sx={{
                             [theme.breakpoints.up("md")]: {
                               width: 260,
@@ -368,7 +383,7 @@ export default function ApprovalForm() {
                             textAlign: "center",
                           }}
                         >
-                          {localStorage.getItem("merchantName")}
+                          {merchantName}
                         </Typography>
                       </Stack>
                     </Grid>
@@ -424,9 +439,7 @@ export default function ApprovalForm() {
                           Pay
                         </Typography>
                         <Typography sx={{ fontSize: 60, fontWeight: 600 }}>
-                          {`R${Number(localStorage.getItem("amount")).toFixed(
-                            2
-                          )}`}
+                          {`R${amount}`}
                         </Typography>
                       </Grid>
 
@@ -452,7 +465,7 @@ export default function ApprovalForm() {
                         md={5.5}
                       >
                         <Avatar
-                          src={localStorage.getItem("merchantProfilePhotoURL")}
+                          src={merchantProfilePhotoURL}
                           sx={{
                             width: 250,
                             height: 250,
@@ -461,7 +474,7 @@ export default function ApprovalForm() {
                         <Typography
                           sx={{ fontSize: 26, fontWeight: 600, py: 2 }}
                         >
-                          {localStorage.getItem("merchantName")}
+                          {merchantName}
                         </Typography>
                       </Grid>
                     </Box>
