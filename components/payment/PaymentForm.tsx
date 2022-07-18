@@ -97,6 +97,7 @@ export default function PaymentForm(props) {
 
                 // If the user does not exist
                 if (errorMessage === "Firebase: Error (auth/user-not-found).") {
+                  setProgressIndicator(false);
                   setPrompt("User does not exist");
                   var resetForm = document.getElementById(
                     "login-form"
@@ -106,6 +107,7 @@ export default function PaymentForm(props) {
 
                 // If the password is incorrect
                 if (errorMessage === "Firebase: Error (auth/wrong-password).") {
+                  setProgressIndicator(false);
                   setPrompt("Incorrect password");
                   var resetForm = document.getElementById(
                     "login-form"
@@ -114,6 +116,7 @@ export default function PaymentForm(props) {
                 }
               });
           } else {
+            setProgressIndicator(false);
             setPrompt("We think you're a robot, please try again");
 
             // Clear the form
