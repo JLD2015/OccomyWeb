@@ -1,12 +1,13 @@
 import { Grid, Stack } from "@mui/material";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import lottie from "lottie-web";
 import { Box } from "@mui/system";
 
 export default function Payment() {
   // <========== Variables ==========>
   const router = useRouter();
+  const [transactionID, setTransactionID] = useState("");
 
   // <========== Page Loads ==========>
 
@@ -47,7 +48,11 @@ export default function Payment() {
         localStorage.setItem("redirectURL", router.query.redirectURL as string);
 
         // We can't redirect using javascript else the deep links don't work
-        window.location.href = `https://www.occomy.com/payment?transactionID=${result.documentID}`;
+        setTransactionID(result.documentID);
+        setTimeout(function () {
+          document.getElementById("invisibleLink").click();
+        }, 500);
+
       } else {
         console.log("Could not create transaction");
         console.log(result);
@@ -73,6 +78,10 @@ export default function Payment() {
   // <========== Body ==========>
   return (
     <>
+      <a
+        id="invisibleLink"
+        href={`https://occomy.com/payment/transactionID=${transactionID}`}
+      ></a>
       <Grid
         container
         direction="column"
