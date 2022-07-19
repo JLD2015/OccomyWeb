@@ -150,7 +150,8 @@ export default function PaymentForm() {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${redirectURL}?status=declined`;
+            // const redirectString = `${redirectURL}?status=declined`
+            const redirectString = `https://google.com?status=declined`;
             router.replace(redirectString);
             localStorage.clear();
           }, 5000);
