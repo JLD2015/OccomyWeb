@@ -142,8 +142,10 @@ export default function PaymentForm() {
           setTimeout(function () {
             const redirectString = `${redirectURL}?status=approved`;
             router.replace(redirectString);
-            localStorage.clear();
           }, 5000);
+          setTimeout(function () {
+            localStorage.clear();
+          }, 10000);
         }
         if (transactionStatus == "declined") {
           setTransactionStatus("declined");
@@ -151,10 +153,11 @@ export default function PaymentForm() {
           // Redirect back to the merchant's website
           setTimeout(function () {
             const redirectString = `${redirectURL}?status=declined`;
-            console.log(redirectString);
             router.replace(redirectString);
-            localStorage.clear();
           }, 5000);
+          setTimeout(function () {
+            localStorage.clear();
+          }, 10000);
         }
       },
       (error) => {
