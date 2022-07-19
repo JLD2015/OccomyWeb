@@ -24,13 +24,15 @@ export default async function createTransaction(
       .status(400)
       .json({ status: "Please provide a valid amount" });
   }
-  const amount = body.amount;
+  var amount = body.amount;
 
   if (isNaN(amount)) {
     return response
       .status(400)
       .json({ status: "Please provide a valid amount" });
   }
+
+  amount = Number(amount).toFixed(2);
 
   if (!body.description) {
     return response

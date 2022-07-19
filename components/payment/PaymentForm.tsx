@@ -20,6 +20,8 @@ import { useRouter } from "next/router";
 import DeclinedAnimation from "./DeclinedAnimation";
 import ApprovedAnimation from "./ApprovedAnimation";
 import Script from "next/script";
+import ApprovalAcceptedSmall from "./ApprovalAcceptedSmall";
+import ApprovalDeclinedSmall from "./ApprovalDeclinedSmall";
 
 // <========== Login Section ==========>
 export default function PaymentForm() {
@@ -141,7 +143,8 @@ export default function PaymentForm() {
               "redirectURL"
             )}?status=approved`;
             router.replace(redirectString);
-          }, 2000);
+            localStorage.clear();
+          }, 5000);
         }
         if (transactionStatus == "declined") {
           setTransactionStatus("declined");
@@ -152,7 +155,8 @@ export default function PaymentForm() {
               "redirectURL"
             )}?status=declined`;
             router.replace(redirectString);
-          }, 2000);
+            localStorage.clear();
+          }, 5000);
         }
       },
       (error) => {
@@ -261,66 +265,86 @@ export default function PaymentForm() {
               alignItems="center"
               md={5}
             >
-              <Avatar
-                src={merchantProfilePhotoURL}
-                sx={{
-                  [theme.breakpoints.up("md")]: {
-                    width: 260,
-                    height: 260,
-                  },
-                  [theme.breakpoints.down("md")]: {
-                    width: 160,
-                    height: 160,
-                  },
-                }}
-              />
-              <Stack
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
-                spacing={{ md: 1 }}
-                sx={{ py: 1 }}
-              >
-                <Typography
-                  sx={{
-                    [theme.breakpoints.up("md")]: {
-                      fontSize: 40,
-                    },
-                    [theme.breakpoints.down("md")]: {
-                      fontSize: 30,
-                    },
-                  }}
-                >
-                  {merchantName}
-                </Typography>
-                <Typography
-                  sx={{
-                    [theme.breakpoints.up("md")]: {
-                      fontSize: 20,
-                    },
-                    [theme.breakpoints.down("md")]: {
-                      fontSize: 16,
-                    },
-                  }}
-                >
-                  Has requested a payment of
-                </Typography>
-              </Stack>
+              {transactionStatus === "pending" && (
+                <>
+                  <Avatar
+                    src={merchantProfilePhotoURL}
+                    sx={{
+                      [theme.breakpoints.up("md")]: {
+                        width: 260,
+                        height: 260,
+                      },
+                      [theme.breakpoints.down("md")]: {
+                        width: 160,
+                        height: 160,
+                      },
+                    }}
+                  />
+                  <Stack
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={{ md: 1 }}
+                    sx={{ py: 1 }}
+                  >
+                    <Typography
+                      sx={{
+                        [theme.breakpoints.up("md")]: {
+                          fontSize: 40,
+                        },
+                        [theme.breakpoints.down("md")]: {
+                          fontSize: 30,
+                        },
+                      }}
+                    >
+                      {merchantName}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        [theme.breakpoints.up("md")]: {
+                          fontSize: 20,
+                        },
+                        [theme.breakpoints.down("md")]: {
+                          fontSize: 16,
+                        },
+                      }}
+                    >
+                      Has requested a payment of
+                    </Typography>
+                  </Stack>
 
-              <Typography
-                sx={{
-                  fontWeight: 600,
-                  [theme.breakpoints.up("md")]: {
-                    fontSize: 60,
-                  },
-                  [theme.breakpoints.down("md")]: {
-                    fontSize: 30,
-                  },
-                  pb: 1,
-                }}
-              >
-                R{amount}
-              </Typography>
+                  <Typography
+                    sx={{
+                      fontWeight: 600,
+                      [theme.breakpoints.up("md")]: {
+                        fontSize: 60,
+                      },
+                      [theme.breakpoints.down("md")]: {
+                        fontSize: 30,
+                      },
+                      pb: 1,
+                    }}
+                  >
+                    R{amount}
+                  </Typography>
+                </>
+              )}
+
+              {transactionStatus === "approved" && (
+                <>
+                  <Box sx={{ width: "100%", pb: 6, pt: 4 }}>
+                    <ApprovalAcceptedSmall />
+                  </Box>
+                </>
+              )}
+
+              {transactionStatus === "declined" && (
+                <>
+                  <Box sx={{ width: "100%", pb: 6, pt: 4 }}>
+                    <ApprovalDeclinedSmall />
+                  </Box>
+                </>
+              )}
             </Grid>
             {/* End column 1.2.1 -> Left column in row */}
 
