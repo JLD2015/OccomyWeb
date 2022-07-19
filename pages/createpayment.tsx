@@ -46,8 +46,8 @@ export default function Payment() {
         localStorage.setItem("merchantName", result.merchantName);
         localStorage.setItem("redirectURL", router.query.redirectURL as string);
 
-        // Navigate to the payment page
-        router.replace(`/payment?transactionID=${result.documentID}`);
+        // We can't redirect using javascript else the deep links don't work
+        window.location.href = `https://www.occomy.com/payment?transactionID=${result.documentID}`;
       } else {
         console.log("Could not create transaction");
         console.log(result);
