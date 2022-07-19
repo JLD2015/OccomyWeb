@@ -3,7 +3,10 @@ import Footer from "../components/Footer";
 import Head from "next/head";
 import PaymentForm from "../components/payment/PaymentForm";
 
-export default function PaymentComplete() {
+// The complete payment page is identical to the payment page
+// It is used to redirect to for mobile apps so the deeplinks don't get triggered again
+
+export default function CompletePayment() {
   // <========== Body ==========>
   return (
     <>
