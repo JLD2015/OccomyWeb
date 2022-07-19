@@ -3,7 +3,7 @@ import Footer from "../components/Footer";
 import Head from "next/head";
 import PaymentForm from "../components/payment/PaymentForm";
 
-export default function Payment() {
+export default function PaymentComplete() {
   // <========== Body ==========>
   return (
     <>
