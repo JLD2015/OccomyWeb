@@ -1,11 +1,12 @@
 [
-    {
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "com.occomy.Occomy",
-        "sha256_cert_fingerprints":
-          ["16:20:FF:C7:71:D1:FB:95:9D:A3:8B:58:12:DF:78:1A:18:B7:43:FE:24:DC:E4:88:4C:18:53:85:5B:BE:14:5B"]
-      }
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.occomy.Occomy",
+      "sha256_cert_fingerprints": [
+        "4B:FD:BB:CD:B8:F1:09:1F:AF:12:BB:66:26:FB:83:4E:4D:AD:92:30:22:6D:88:87:97:79:A3:61:84:97:5F:AB"
+      ]
     }
-  ]
+  }
+]
