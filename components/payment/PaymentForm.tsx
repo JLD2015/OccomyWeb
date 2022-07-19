@@ -38,6 +38,7 @@ export default function PaymentForm() {
   const [merchantName, setMerchantName] = useState("");
   const [amount, setAmount] = useState("");
   const [transactionID, setTransactionID] = useState("");
+  const [redirectURL, setRedirectURL] = useState("");
 
   // <========== Functions ==========>
   const handleSubmit = async (event) => {
@@ -139,9 +140,7 @@ export default function PaymentForm() {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${localStorage.getItem(
-              "redirectURL"
-            )}?status=approved`;
+            const redirectString = `${redirectURL}?status=approved`;
             router.replace(redirectString);
             localStorage.clear();
           }, 5000);
@@ -151,9 +150,7 @@ export default function PaymentForm() {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${localStorage.getItem(
-              "redirectURL"
-            )}?status=declined`;
+            const redirectString = `${redirectURL}?status=declined`;
             router.replace(redirectString);
             localStorage.clear();
           }, 5000);
@@ -175,6 +172,7 @@ export default function PaymentForm() {
     setQrCodeValue(
       `{\"transactionID\": \"${localStorage.getItem("documentID")}\"}`
     );
+    setRedirectURL(localStorage.getItem("redirectURL"));
   }, []);
 
   // <========== Body ==========>
@@ -265,86 +263,167 @@ export default function PaymentForm() {
               alignItems="center"
               md={5}
             >
-              {transactionStatus === "pending" && (
-                <>
-                  <Avatar
-                    src={merchantProfilePhotoURL}
-                    sx={{
-                      [theme.breakpoints.up("md")]: {
-                        width: 260,
-                        height: 260,
-                      },
-                      [theme.breakpoints.down("md")]: {
-                        width: 160,
-                        height: 160,
-                      },
-                    }}
-                  />
-                  <Stack
-                    direction="column"
-                    justifyContent="center"
-                    alignItems="center"
-                    spacing={{ md: 1 }}
-                    sx={{ py: 1 }}
-                  >
-                    <Typography
+              {/* This is the behaviour at small screen sizes */}
+              <Grid
+                item
+                container
+                direction="column"
+                justifyContent="space-around"
+                alignItems="center"
+                sx={{ display: { xs: "flex", md: "none" } }}
+              >
+                {transactionStatus === "pending" && (
+                  <>
+                    <Avatar
+                      src={merchantProfilePhotoURL}
                       sx={{
                         [theme.breakpoints.up("md")]: {
-                          fontSize: 40,
+                          width: 260,
+                          height: 260,
+                        },
+                        [theme.breakpoints.down("md")]: {
+                          width: 160,
+                          height: 160,
+                        },
+                      }}
+                    />
+                    <Stack
+                      direction="column"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={{ md: 1 }}
+                      sx={{ py: 1 }}
+                    >
+                      <Typography
+                        sx={{
+                          [theme.breakpoints.up("md")]: {
+                            fontSize: 40,
+                          },
+                          [theme.breakpoints.down("md")]: {
+                            fontSize: 30,
+                          },
+                        }}
+                      >
+                        {merchantName}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          [theme.breakpoints.up("md")]: {
+                            fontSize: 20,
+                          },
+                          [theme.breakpoints.down("md")]: {
+                            fontSize: 16,
+                          },
+                        }}
+                      >
+                        Has requested a payment of
+                      </Typography>
+                    </Stack>
+
+                    <Typography
+                      sx={{
+                        fontWeight: 600,
+                        [theme.breakpoints.up("md")]: {
+                          fontSize: 60,
                         },
                         [theme.breakpoints.down("md")]: {
                           fontSize: 30,
                         },
+                        pb: 1,
                       }}
                     >
-                      {merchantName}
+                      R{amount}
                     </Typography>
-                    <Typography
-                      sx={{
-                        [theme.breakpoints.up("md")]: {
-                          fontSize: 20,
-                        },
-                        [theme.breakpoints.down("md")]: {
-                          fontSize: 16,
-                        },
-                      }}
-                    >
-                      Has requested a payment of
-                    </Typography>
-                  </Stack>
+                  </>
+                )}
 
+                {transactionStatus === "approved" && (
+                  <>
+                    <Box sx={{ width: "100%", pb: 6, pt: 4 }}>
+                      <ApprovalAcceptedSmall />
+                    </Box>
+                  </>
+                )}
+
+                {transactionStatus === "declined" && (
+                  <>
+                    <Box sx={{ width: "100%", pb: 6, pt: 4 }}>
+                      <ApprovalDeclinedSmall />
+                    </Box>
+                  </>
+                )}
+              </Grid>
+
+              {/* This is the behaviour at large screen sizes */}
+              <Grid
+                item
+                container
+                direction="column"
+                justifyContent="space-around"
+                alignItems="center"
+                sx={{ display: { xs: "none", md: "flex" } }}
+              >
+                <Avatar
+                  src={merchantProfilePhotoURL}
+                  sx={{
+                    [theme.breakpoints.up("md")]: {
+                      width: 260,
+                      height: 260,
+                    },
+                    [theme.breakpoints.down("md")]: {
+                      width: 160,
+                      height: 160,
+                    },
+                  }}
+                />
+                <Stack
+                  direction="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={{ md: 1 }}
+                  sx={{ py: 1 }}
+                >
                   <Typography
                     sx={{
-                      fontWeight: 600,
                       [theme.breakpoints.up("md")]: {
-                        fontSize: 60,
+                        fontSize: 40,
                       },
                       [theme.breakpoints.down("md")]: {
                         fontSize: 30,
                       },
-                      pb: 1,
                     }}
                   >
-                    R{amount}
+                    {merchantName}
                   </Typography>
-                </>
-              )}
+                  <Typography
+                    sx={{
+                      [theme.breakpoints.up("md")]: {
+                        fontSize: 20,
+                      },
+                      [theme.breakpoints.down("md")]: {
+                        fontSize: 16,
+                      },
+                    }}
+                  >
+                    Has requested a payment of
+                  </Typography>
+                </Stack>
 
-              {transactionStatus === "approved" && (
-                <>
-                  <Box sx={{ width: "100%", pb: 6, pt: 4 }}>
-                    <ApprovalAcceptedSmall />
-                  </Box>
-                </>
-              )}
-
-              {transactionStatus === "declined" && (
-                <>
-                  <Box sx={{ width: "100%", pb: 6, pt: 4 }}>
-                    <ApprovalDeclinedSmall />
-                  </Box>
-                </>
-              )}
+                <Typography
+                  sx={{
+                    fontWeight: 600,
+                    [theme.breakpoints.up("md")]: {
+                      fontSize: 60,
+                    },
+                    [theme.breakpoints.down("md")]: {
+                      fontSize: 30,
+                    },
+                    pb: 1,
+                  }}
+                >
+                  R{amount}
+                </Typography>
+              </Grid>
             </Grid>
             {/* End column 1.2.1 -> Left column in row */}
 
@@ -454,10 +533,14 @@ export default function PaymentForm() {
                       },
                     }}
                   >
-                    {!progressIndicator && <>Log in</>}
+                    {!progressIndicator && (
+                      <>
+                        <Typography sx={{ fontSize: 22 }}>Log In</Typography>
+                      </>
+                    )}
 
                     {progressIndicator && (
-                      <CircularProgress size={35} sx={{ color: "white" }} />
+                      <CircularProgress size={30} sx={{ color: "white" }} />
                     )}
                   </Button>
 

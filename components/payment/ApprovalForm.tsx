@@ -54,7 +54,7 @@ export default function ApprovalForm() {
     // First we call the API to decline the transaction
 
     const data = {
-      transactionid: localStorage.getItem("transactionID"),
+      transactionid: localStorage.getItem("documentID"),
     };
     const JSONdata = JSON.stringify(data);
 
@@ -119,7 +119,7 @@ export default function ApprovalForm() {
 
           // First we call the API to approve the transaction
           const data = {
-            transactionid: localStorage.getItem("transactionID"),
+            transactionid: localStorage.getItem("documentID"),
             latitude: latitude,
             longitude: longitude,
           };
@@ -580,7 +580,7 @@ export default function ApprovalForm() {
                   )}
 
                   {progressIndicatorDecline && (
-                    <CircularProgress size={35} sx={{ color: "white" }} />
+                    <CircularProgress size={30} sx={{ color: "white" }} />
                   )}
                 </Button>
               </Grid>
@@ -645,7 +645,7 @@ export default function ApprovalForm() {
                   )}
 
                   {progressIndicatorApprove && (
-                    <CircularProgress size={35} sx={{ color: "white" }} />
+                    <CircularProgress size={30} sx={{ color: "white" }} />
                   )}
                 </Button>
               </Grid>

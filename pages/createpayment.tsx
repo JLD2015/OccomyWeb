@@ -41,7 +41,7 @@ export default function Payment() {
         localStorage.setItem("documentID", result.documentID);
         localStorage.setItem("transactionID", result.transactionID);
         localStorage.setItem(
-          "merchantProfilePhoto",
+          "merchantProfilePhotoURL",
           result.merchantProfilePhoto
         );
         localStorage.setItem("merchantName", result.merchantName);
@@ -52,7 +52,6 @@ export default function Payment() {
         setTimeout(function () {
           document.getElementById("invisibleLink").click();
         }, 500);
-
       } else {
         console.log("Could not create transaction");
         console.log(result);
@@ -78,10 +77,22 @@ export default function Payment() {
   // <========== Body ==========>
   return (
     <>
-      <a
-        id="invisibleLink"
-        href={`https://www.occomy.com/payment?transactionID=${transactionID}`}
-      ></a>
+      {process.env.NODE_ENV === "development" && (
+        <>
+          <a
+            id="invisibleLink"
+            href={`http://localhost:3000/payment?transactionID=${transactionID}`}
+          ></a>
+        </>
+      )}
+      {process.env.NODE_ENV === "production" && (
+        <>
+          <a
+            id="invisibleLink"
+            href={`https://www.occomy.com/payment?transactionID=${transactionID}`}
+          ></a>
+        </>
+      )}
       <Grid
         container
         direction="column"
