@@ -80,7 +80,7 @@ export default function Payment() {
     <>
       <a
         id="invisibleLink"
-        href={`https://occomy.com/payment?transactionID=${transactionID}`}
+        href={`https://www.occomy.com/payment?transactionID=${transactionID}`}
       ></a>
       <Grid
         container
