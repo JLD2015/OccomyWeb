@@ -40,6 +40,7 @@ export default function PaymentForm() {
   const [transactionID, setTransactionID] = useState("");
   const [orderid, setOrderid] = useState("");
   const [callback, setCallback] = useState("");
+  const [documentID, setDocumentID] = useState("");
 
   // <========== Functions ==========>
   const handleSubmit = async (event) => {
@@ -141,7 +142,7 @@ export default function PaymentForm() {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${callback}?orderid=${orderid}&status=approved&reference=${transactionID}`;
+            const redirectString = `${callback}?orderid=${orderid}&status=approved&reference=${documentID}`;
             router.replace(redirectString);
           }, 5000);
           setTimeout(function () {
@@ -153,7 +154,7 @@ export default function PaymentForm() {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${transactionID}`;
+            const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${documentID}`;
             router.replace(redirectString);
           }, 5000);
           setTimeout(function () {
@@ -179,6 +180,7 @@ export default function PaymentForm() {
     );
     setOrderid(localStorage.getItem("orderid"));
     setCallback(localStorage.getItem("callback"));
+    setDocumentID(localStorage.getItem("documentID"));
   }, []);
 
   // <========== Body ==========>
