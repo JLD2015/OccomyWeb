@@ -141,7 +141,7 @@ export default function PaymentForm() {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${callback}?orderid=${orderid}`;
+            const redirectString = `${callback}?orderid=${orderid}?status=approved?reference=${transactionID}`;
             router.replace(redirectString);
           }, 5000);
           setTimeout(function () {
@@ -153,7 +153,7 @@ export default function PaymentForm() {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${callback}?orderid=${orderid}`;
+            const redirectString = `${callback}?orderid=${orderid}?status=declined?reference=${transactionID}`;
             router.replace(redirectString);
           }, 5000);
           setTimeout(function () {
