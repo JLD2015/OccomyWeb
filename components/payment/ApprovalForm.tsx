@@ -81,7 +81,7 @@ export default function ApprovalForm() {
       //Redirect back to the merchant's website
       setTimeout(function () {
         const redirectString = `${localStorage.getItem(
-          "redirectURL"
+          "callback"
         )}?status=declined`;
         router.replace(redirectString);
 
@@ -98,7 +98,7 @@ export default function ApprovalForm() {
       // Redirect back to the merchant's website
       setTimeout(function () {
         const redirectString = `${localStorage.getItem(
-          "redirectURL"
+          "callback"
         )}?status=declined`;
         router.replace(redirectString);
         // Clear the local storage
@@ -148,7 +148,7 @@ export default function ApprovalForm() {
             //Redirect back to the merchant's website
             setTimeout(function () {
               const redirectString = `${localStorage.getItem(
-                "redirectURL"
+                "callback"
               )}?status=approved`;
               router.replace(redirectString);
               // Clear the local storage
@@ -164,7 +164,7 @@ export default function ApprovalForm() {
             // Redirect back to the merchant's website
             setTimeout(function () {
               const redirectString = `${localStorage.getItem(
-                "redirectURL"
+                "callback"
               )}?status=declined`;
               router.replace(redirectString);
               // Clear the local storage
@@ -183,7 +183,7 @@ export default function ApprovalForm() {
           // Redirect back to the merchant's website
           setTimeout(function () {
             const redirectString = `${localStorage.getItem(
-              "redirectURL"
+              "callback"
             )}?status=declined`;
             router.replace(redirectString);
             // Clear the local storage
@@ -202,7 +202,7 @@ export default function ApprovalForm() {
       // Redirect back to the merchant's website
       setTimeout(function () {
         const redirectString = `${localStorage.getItem(
-          "redirectURL"
+          "callback"
         )}?status=declined`;
         router.replace(redirectString);
         // Clear the local storage

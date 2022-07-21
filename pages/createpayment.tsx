@@ -45,7 +45,7 @@ export default function Payment() {
           result.merchantProfilePhoto
         );
         localStorage.setItem("merchantName", result.merchantName);
-        localStorage.setItem("redirectURL", router.query.redirectURL as string);
+        localStorage.setItem("callback", router.query.callback as string);
 
         // We can't redirect using javascript else the deep links don't work
         setTransactionID(result.documentID);
