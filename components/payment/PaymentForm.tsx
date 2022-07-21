@@ -38,6 +38,7 @@ export default function PaymentForm() {
   const [merchantName, setMerchantName] = useState("");
   const [amount, setAmount] = useState("");
   const [transactionID, setTransactionID] = useState("");
+  const [orderid, setOrderid] = useState("");
   const [callback, setCallback] = useState("");
 
   // <========== Functions ==========>
@@ -140,7 +141,7 @@ export default function PaymentForm() {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${callback}?status=approved`;
+            const redirectString = `${callback}?orderid=${orderid}`;
             router.replace(redirectString);
           }, 5000);
           setTimeout(function () {
@@ -152,7 +153,7 @@ export default function PaymentForm() {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${callback}?status=declined`;
+            const redirectString = `${callback}?orderid=${orderid}`;
             router.replace(redirectString);
           }, 5000);
           setTimeout(function () {
@@ -176,6 +177,7 @@ export default function PaymentForm() {
     setQrCodeValue(
       `{\"transactionID\": \"${localStorage.getItem("documentID")}\"}`
     );
+    setOrderid(localStorage.getItem("orderid"));
     setCallback(localStorage.getItem("callback"));
   }, []);
 
