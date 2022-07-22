@@ -45,6 +45,9 @@ export default function ApprovalForm() {
   const [merchantName, setMerchantName] = useState("");
   const [amount, setAmount] = useState("");
   const [userName, setUserName] = useState("");
+  const [orderid, setOrderid] = useState("");
+  const [callback, setCallback] = useState("");
+  const [documentID, setDocumentID] = useState("");
 
   // <========== Functions ==========>
   const declineClicked = async () => {
@@ -80,9 +83,7 @@ export default function ApprovalForm() {
 
       //Redirect back to the merchant's website
       setTimeout(function () {
-        const redirectString = `${localStorage.getItem(
-          "callback"
-        )}?status=declined`;
+        const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${documentID}`;
         router.replace(redirectString);
 
         // Clear the local storage
@@ -97,9 +98,7 @@ export default function ApprovalForm() {
 
       // Redirect back to the merchant's website
       setTimeout(function () {
-        const redirectString = `${localStorage.getItem(
-          "callback"
-        )}?status=declined`;
+        const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${documentID}`;
         router.replace(redirectString);
         // Clear the local storage
         localStorage.clear();
@@ -147,9 +146,7 @@ export default function ApprovalForm() {
 
             //Redirect back to the merchant's website
             setTimeout(function () {
-              const redirectString = `${localStorage.getItem(
-                "callback"
-              )}?status=approved`;
+              const redirectString = `${callback}?orderid=${orderid}&status=approved&reference=${documentID}`;
               router.replace(redirectString);
               // Clear the local storage
               localStorage.clear();
@@ -163,9 +160,7 @@ export default function ApprovalForm() {
 
             // Redirect back to the merchant's website
             setTimeout(function () {
-              const redirectString = `${localStorage.getItem(
-                "callback"
-              )}?status=declined`;
+              const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${documentID}`;
               router.replace(redirectString);
               // Clear the local storage
               localStorage.clear();
@@ -182,9 +177,7 @@ export default function ApprovalForm() {
 
           // Redirect back to the merchant's website
           setTimeout(function () {
-            const redirectString = `${localStorage.getItem(
-              "callback"
-            )}?status=declined`;
+            const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${documentID}`;
             router.replace(redirectString);
             // Clear the local storage
             localStorage.clear();
@@ -201,9 +194,7 @@ export default function ApprovalForm() {
 
       // Redirect back to the merchant's website
       setTimeout(function () {
-        const redirectString = `${localStorage.getItem(
-          "callback"
-        )}?status=declined`;
+        const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${documentID}`;
         router.replace(redirectString);
         // Clear the local storage
         localStorage.clear();
@@ -219,6 +210,9 @@ export default function ApprovalForm() {
     setMerchantName(localStorage.getItem("merchantName"));
     setMerchantProfilePhotoURL(localStorage.getItem("merchantProfilePhotoURL"));
     setUserName(localStorage.getItem("userName"));
+    setOrderid(localStorage.getItem("orderid"));
+    setCallback(localStorage.getItem("callback"));
+    setDocumentID(localStorage.getItem("documentID"));
   }, []);
 
   // <========== Body ==========>
