@@ -1,7 +1,10 @@
 // <========== Imports ==========>
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
+import * as FirebaseService from "../services/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import {
   Button,
+  CircularProgress,
   Divider,
   Grid,
   Stack,
@@ -11,30 +14,132 @@ import {
 import Image from "next/image";
 import { Box } from "@mui/system";
 import { useTheme } from "@mui/material";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import Script from "next/script";
 
-// <========== Functions ==========>
-function getOperatingSystem() {
-  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-
-  if (/android/i.test(userAgent)) {
-    return "Android";
-  }
-
-  // iOS detection from: http://stackoverflow.com/a/9039885/177710
-  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-    return "iOS";
-  }
-
-  return "unknown";
-}
-
-// <========== Login Section ==========>
 export default function LoginSection() {
-  // MUI theme
+  // <========== Variables ==========>
   const theme = useTheme();
+  const [prompt, setPrompt] = useState("");
+  const [progressIndicator, setProgressIndicator] = useState(false);
+  const router = useRouter();
 
+  // <========== Functions ==========>
+  function getOperatingSystem() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+    if (/android/i.test(userAgent)) {
+      return "Android";
+    }
+
+    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+      return "iOS";
+    }
+
+    return "unknown";
+  }
+
+  const handleSubmit = async (event) => {
+    // Stop form from submitting and refreshing page
+    event.preventDefault();
+
+    // Start the progress spinner
+    setProgressIndicator(true);
+
+    // Get a reCAPTCHA token
+    window.grecaptcha.ready(() => {
+      window.grecaptcha
+        .execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITEKEY, {
+          action: "submit",
+        })
+        .then(async (token) => {
+          const data = {
+            token: token,
+            email: event.target.email.value,
+            password: event.target.password.value,
+          };
+          const JSONdata = JSON.stringify(data);
+
+          const endpoint = "/api/services/verifyrecaptcha";
+          const options = {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSONdata,
+          };
+
+          const response = await fetch(endpoint, options);
+          const result = await response.json();
+
+          if (result.status === "success") {
+            signInWithEmailAndPassword(
+              FirebaseService.auth,
+              data.email,
+              data.password
+            )
+              .then((userCredential: any) => {
+                // Signed in
+                const user = userCredential.user;
+
+                // Store the necesary details in session storage
+                localStorage.setItem("accessToken", user.accessToken);
+                localStorage.setItem("userName", user.displayName);
+
+                // We can now move over to the payment approval page
+                router.replace("/overview");
+              })
+              .catch((error) => {
+                const errorMessage = error.message;
+                console.log(errorMessage);
+
+                // If the user does not exist
+                if (errorMessage === "Firebase: Error (auth/user-not-found).") {
+                  setProgressIndicator(false);
+                  setPrompt("User does not exist");
+                  var resetForm = document.getElementById(
+                    "login-form"
+                  ) as HTMLFormElement;
+                  resetForm.reset();
+                }
+
+                // If the password is incorrect
+                if (errorMessage === "Firebase: Error (auth/wrong-password).") {
+                  setProgressIndicator(false);
+                  setPrompt("Incorrect password");
+                  var resetForm = document.getElementById(
+                    "login-form"
+                  ) as HTMLFormElement;
+                  resetForm.reset();
+                }
+              });
+          } else {
+            setProgressIndicator(false);
+            setPrompt("We think you're a robot, please try again");
+
+            // Clear the form
+            var resetForm = document.getElementById(
+              "login-form"
+            ) as HTMLFormElement;
+            resetForm.reset();
+          }
+        });
+    });
+  };
+
+  // <========== Body ==========>
   return (
     <>
+      {/* Scripts */}
+      <Script
+        src={
+          "https://www.google.com/recaptcha/api.js?render=" +
+          process.env.NEXT_PUBLIC_RECAPTCHA_SITEKEY
+        }
+      />
+
       {/* Grid 1 Column -> Fills entire screen and contains background image */}
       <Grid
         container
@@ -175,8 +280,8 @@ export default function LoginSection() {
             }}
           >
             <form
-              action="api/auth/login"
-              method="post"
+              id="login-form"
+              onSubmit={handleSubmit}
               style={{
                 width: "100%",
                 backgroundColor: "white",
@@ -234,8 +339,21 @@ export default function LoginSection() {
                     },
                   }}
                 >
-                  Log in
+                  {!progressIndicator && (
+                    <>
+                      <Typography sx={{ fontSize: 22 }}>Log In</Typography>
+                    </>
+                  )}
+                  {progressIndicator && (
+                    <CircularProgress size={32} sx={{ color: "white" }} />
+                  )}
                 </Button>
+                {prompt !== "" && (
+                  <>
+                    <Typography sx={{ color: "red" }}>{prompt}</Typography>
+                  </>
+                )}
+
                 <Typography
                   sx={{
                     [theme.breakpoints.up("md")]: {
