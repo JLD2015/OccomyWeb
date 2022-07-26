@@ -167,7 +167,7 @@ export default function PaymentForm() {
       }
     );
     return unsubscribe;
-  }, [setTransactionStatus, router]);
+  }, [setTransactionStatus, router, callback, documentID, orderid]);
 
   // Get values from local storage
   useEffect(() => {

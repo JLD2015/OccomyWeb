@@ -1,10 +1,14 @@
 // <========== Imports ==========>
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
-import * as FirebaseService from "../services/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import {
+  Alert,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Grid,
   Stack,
@@ -17,6 +21,8 @@ import { useTheme } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Script from "next/script";
+import * as FirebaseService from "../services/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginSection() {
   // <========== Variables ==========>
@@ -24,6 +30,9 @@ export default function LoginSection() {
   const [prompt, setPrompt] = useState("");
   const [progressIndicator, setProgressIndicator] = useState(false);
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [forgotSpinner, setForgotSpinner] = useState(false);
+  const [emailDialog, setEmailDialog] = useState(false);
 
   // <========== Functions ==========>
   function getOperatingSystem() {
@@ -75,6 +84,7 @@ export default function LoginSection() {
           const result = await response.json();
 
           if (result.status === "success") {
+            // Log the user in here
             signInWithEmailAndPassword(
               FirebaseService.auth,
               data.email,
@@ -83,18 +93,15 @@ export default function LoginSection() {
               .then((userCredential: any) => {
                 // Signed in
                 const user = userCredential.user;
-
                 // Store the necesary details in session storage
                 localStorage.setItem("accessToken", user.accessToken);
                 localStorage.setItem("userName", user.displayName);
-
                 // We can now move over to the payment approval page
-                router.replace("/overview");
+                router.replace("/dashboard");
               })
               .catch((error) => {
                 const errorMessage = error.message;
                 console.log(errorMessage);
-
                 // If the user does not exist
                 if (errorMessage === "Firebase: Error (auth/user-not-found).") {
                   setProgressIndicator(false);
@@ -104,7 +111,6 @@ export default function LoginSection() {
                   ) as HTMLFormElement;
                   resetForm.reset();
                 }
-
                 // If the password is incorrect
                 if (errorMessage === "Firebase: Error (auth/wrong-password).") {
                   setProgressIndicator(false);
@@ -127,6 +133,47 @@ export default function LoginSection() {
           }
         });
     });
+  };
+
+  const handleForgot = async (event) => {
+    // Prevent the default submit behaviour
+    event.preventDefault();
+
+    // Start the spinner
+    setForgotSpinner(true);
+
+    // Make sure the user has enetered an email address
+    if (email === "") {
+      setPrompt("Please enter an email address");
+      return;
+    }
+
+    // Attempt to send reset email
+    const data = {
+      email: email,
+    };
+    const JSONdata = JSON.stringify(data);
+
+    // Send emails
+    const endpoint = "/api/email/resetpassword";
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSONdata,
+    };
+
+    const response = await fetch(endpoint, options);
+
+    setForgotSpinner(false);
+
+    // Clear the form
+    var resetForm = document.getElementById("login-form") as HTMLFormElement;
+    resetForm.reset();
+
+    // Show alert
+    setEmailDialog(true);
   };
 
   // <========== Body ==========>
@@ -307,6 +354,9 @@ export default function LoginSection() {
                   label="Email"
                   name="email"
                   type="email"
+                  onChange={function (event) {
+                    setEmail(event.target.value);
+                  }}
                   sx={{
                     [`& fieldset`]: {
                       borderRadius: "10px",
@@ -354,20 +404,35 @@ export default function LoginSection() {
                   </>
                 )}
 
-                <Typography
-                  sx={{
-                    [theme.breakpoints.up("md")]: {
-                      fontSize: "20px",
-                    },
-                    [theme.breakpoints.down("md")]: {
-                      fontSize: "14px",
-                    },
-                  }}
-                >
-                  <a href="https://google.com" style={{ paddingTop: "5px" }}>
-                    Forgot Password?
-                  </a>
-                </Typography>
+                {forgotSpinner && (
+                  <>
+                    <CircularProgress size={38} sx={{ color: "black" }} />
+                  </>
+                )}
+
+                {!forgotSpinner && (
+                  <>
+                    <Typography
+                      sx={{
+                        [theme.breakpoints.up("md")]: {
+                          fontSize: "20px",
+                        },
+                        [theme.breakpoints.down("md")]: {
+                          fontSize: "16px",
+                        },
+                        pt: 1,
+                      }}
+                    >
+                      <a
+                        onClick={handleForgot}
+                        href=""
+                        style={{ paddingTop: "5px" }}
+                      >
+                        Forgot Password?
+                      </a>
+                    </Typography>
+                  </>
+                )}
 
                 <Divider
                   sx={{
@@ -381,6 +446,9 @@ export default function LoginSection() {
                   or
                 </Divider>
                 <Button
+                  onClick={function () {
+                    router.push("/createaccount");
+                  }}
                   variant="contained"
                   color="success"
                   type="submit"
@@ -447,6 +515,33 @@ export default function LoginSection() {
         {/* End Grid 1.3 Row -> Fills bottom top third of the page */}
       </Grid>
       {/* End Grid 1 Column -> Fills entire screen and contains background image */}
+      {/* Dialog for forgot password */}
+      <Dialog
+        open={emailDialog}
+        onClose={function () {
+          setEmailDialog(false);
+        }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Password Reset"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            If an account is associated with this email address, you will
+            receive an email containing a link to reset your password.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={function () {
+              setEmailDialog(false);
+            }}
+          >
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* End dialog for forgot password */}
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signOut, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,3 +22,48 @@ export const monitorTransaction = (documentID: string, snapshot, error) => {
   const docRef = doc(db, "transactions", documentID);
   return onSnapshot(docRef, snapshot, error);
 };
+
+// <========== Used for monitoring whether user is llogged in ==========>
+const formatAuthUser = (user) => ({
+  uid: user.uid,
+  email: user.email,
+});
+
+export function useFirebaseAuth() {
+  const [authUser, setAuthUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const authStateChanged = async (authState) => {
+    if (!authState) {
+      setAuthUser(null);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    var formattedUser = formatAuthUser(authState);
+    setAuthUser(formattedUser);
+    setLoading(false);
+  };
+
+  // Used for signing out
+  const clear = () => {
+    setAuthUser(null);
+    setLoading(true);
+  };
+
+  const Logout = async () => signOut(auth).then(clear);
+
+  // Listen for firebase state change
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(authStateChanged);
+    return () => unsubscribe();
+  }, []);
+
+  return {
+    authUser,
+    loading,
+    Logout,
+  };
+}
+// <========== End used for monitoring whether user is llogged in ==========>

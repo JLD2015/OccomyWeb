@@ -5,6 +5,7 @@ import { CssBaseline } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Navigation from "../components/dashboard/navigation";
+import { AuthContextProvider } from "../store/AuthContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   // <========== Variables ==========>
@@ -13,37 +14,32 @@ export default function App({ Component, pageProps }: AppProps) {
   const dashboardRoutes = ["/dashboard", "/settings"];
 
   // <========== Body ==========>
-  if (dashboardRoutes.includes(router.asPath)) {
-    return (
-      <>
-        <Head>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width"
-          />
-        </Head>
+  return (
+    <>
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+      </Head>
+      <AuthContextProvider>
         <ThemeProvider theme={theme}>
-          {/* Applies MUI css styling */}
-          <CssBaseline />
-          <Navigation mainPage={<Component {...pageProps} />} />
+          <CssBaseline>
+            {/* If we are inside a dashboard path we want to include navigation */}
+            {dashboardRoutes.includes(router.asPath) && (
+              <>
+                <Navigation mainPage={<Component {...pageProps} />} />
+              </>
+            )}
+            {/* If we are outside a dashboard path we don't want navigation */}
+            {!dashboardRoutes.includes(router.asPath) && (
+              <>
+                <Component {...pageProps} />
+              </>
+            )}
+          </CssBaseline>
         </ThemeProvider>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Head>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width"
-          />
-        </Head>
-        <ThemeProvider theme={theme}>
-          {/* Applies MUI css styling */}
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </>
-    );
-  }
+      </AuthContextProvider>
+    </>
+  );
 }

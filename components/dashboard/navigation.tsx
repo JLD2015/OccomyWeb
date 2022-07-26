@@ -15,6 +15,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button, MenuItem, useMediaQuery } from "@mui/material";
+import { useAuth } from "../../store/AuthContext";
 
 // Icons
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -45,6 +46,7 @@ export default function Navigation(props) {
       icon: SettingsIcon,
     },
   ];
+  const { Logout } = useAuth();
 
   // <========== Functions ==========>
   const toggleDrawer = () => {
@@ -53,6 +55,11 @@ export default function Navigation(props) {
     } else {
       setOpen(true);
     }
+  };
+
+  const handleSignout = () => {
+    Logout();
+    router.replace("/");
   };
 
   // <========== Page Loads ==========>
@@ -129,7 +136,7 @@ export default function Navigation(props) {
         sx={{ boxShadow: "none" }}
       >
         <Toolbar>
-          <IconButton onClick={toggleDrawer} sx={{ml: -2}}>
+          <IconButton onClick={toggleDrawer} sx={{ ml: -2 }}>
             {open === true ? (
               <ChevronLeftIcon sx={{ fontSize: "30px" }} />
             ) : (
@@ -137,7 +144,7 @@ export default function Navigation(props) {
             )}
           </IconButton>
           <Box sx={{ flexGrow: 1 }}></Box>
-          <Button onClick={toggleDrawer}>
+          <Button onClick={handleSignout}>
             <Typography sx={{ color: "red" }}>Logout</Typography>
           </Button>
         </Toolbar>
