@@ -228,13 +228,20 @@ export default function Navigation(props) {
       {/* Main content */}
       {isMedium ? (
         // We return this at medium or above
-        <Main onClick={toggleDrawer} open={open}>
+        <Main
+          onClick={function () {
+            setOpen(false);
+          }}
+          open={open}
+        >
           {props.mainPage}
         </Main>
       ) : (
         // We return this at small
         <Box
-          onClick={toggleDrawer}
+          onClick={function () {
+            setOpen(false);
+          }}
           sx={{ flexGrow: "1", marginLeft: `-${drawerWidth}px` }}
         >
           {props.mainPage}
