@@ -500,14 +500,14 @@ export default function LoginSection() {
                     },
                   }}
                 >
-                  This site is protected by reCAPTCHA and the Google &nbsp;
+                  This site is protected by reCAPTCHA and the Google&nbsp;
                   <a
                     style={{ color: "blue" }}
                     href="https://policies.google.com/privacy"
                   >
                     Privacy Policy
                   </a>{" "}
-                  and &nbsp;
+                  and&nbsp;
                   <a
                     style={{ color: "blue" }}
                     href="https://policies.google.com/terms"
