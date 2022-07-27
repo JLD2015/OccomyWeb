@@ -189,14 +189,6 @@ export default function LoginSection() {
   // <========== Body ==========>
   return (
     <>
-      {/* Scripts */}
-      <Script
-        src={
-          "https://www.google.com/recaptcha/api.js?render=" +
-          process.env.NEXT_PUBLIC_RECAPTCHA_SITEKEY
-        }
-      />
-
       {/* Grid 1 Column -> Fills entire screen and contains background image */}
       <Grid
         container
@@ -262,6 +254,11 @@ export default function LoginSection() {
           direction="row"
           justifyContent="center"
           alignItems="center"
+          sx={{
+            [theme.breakpoints.down("md")]: {
+              mt: -2,
+            },
+          }}
         >
           {/* 1.2.1 -> Contains the logo and slogan */}
           <Grid
@@ -474,6 +471,34 @@ export default function LoginSection() {
                 >
                   Create Account
                 </Button>
+                <Typography
+                  sx={{
+                    textAlign: "center",
+                    [theme.breakpoints.up("md")]: {
+                      pt: 2,
+                      fontSize: 12,
+                    },
+                    [theme.breakpoints.down("md")]: {
+                      fontSize: 10,
+                    },
+                  }}
+                >
+                  This site is protected by reCAPTCHA and the Google &nbsp;
+                  <a
+                    style={{ color: "blue" }}
+                    href="https://policies.google.com/privacy"
+                  >
+                    Privacy Policy
+                  </a>{" "}
+                  and &nbsp;
+                  <a
+                    style={{ color: "blue" }}
+                    href="https://policies.google.com/terms"
+                  >
+                    Terms of Service
+                  </a>{" "}
+                  apply.
+                </Typography>
               </Stack>
             </form>
 

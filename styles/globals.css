@@ -3,6 +3,10 @@ html {
   overflow: auto;
 }
 
+.grecaptcha-badge {
+  visibility: hidden;
+}
+
 body {
   height: auto;
   overflow: auto;

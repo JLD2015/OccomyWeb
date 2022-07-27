@@ -89,6 +89,7 @@ export default function Footer() {
           Copyright © {new Date().getFullYear()}{" "}
           <strong>Occomy (Pty) Ltd.</strong> All Rights Reserved
         </Typography>
+
         {/* End copyright */}
       </Grid>
       {/* Grid 1 Row -> Outside container for the footer */}

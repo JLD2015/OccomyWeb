@@ -6,6 +6,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import Navigation from "../components/dashboard/navigation";
 import { AuthContextProvider } from "../store/AuthContext";
+import Script from "next/script";
 
 export default function App({ Component, pageProps }: AppProps) {
   // <========== Variables ==========>
@@ -22,6 +23,14 @@ export default function App({ Component, pageProps }: AppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
+
+      <Script
+        src={
+          "https://www.google.com/recaptcha/api.js?render=" +
+          process.env.NEXT_PUBLIC_RECAPTCHA_SITEKEY
+        }
+      />
+
       <AuthContextProvider>
         <ThemeProvider theme={theme}>
           <CssBaseline>

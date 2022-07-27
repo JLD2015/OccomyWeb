@@ -55,7 +55,10 @@ export default function Settings() {
         justifyContent="flex-start"
         alignItems="center"
         height={"100vh"}
-        sx={{ backgroundColor: "#f5f5f5", p: 2 }}
+        sx={{
+          backgroundColor: "#f5f5f5",
+          p: 2,
+        }}
       >
         {/* Drop content below appbar */}
         <Toolbar />
