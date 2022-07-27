@@ -2,6 +2,7 @@ import { useTheme } from "@mui/material";
 import { Grid, Stack, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import lottie from "lottie-web";
+import Head from "next/head";
 import { useEffect } from "react";
 import Footer from "../components/Footer";
 
@@ -24,6 +25,12 @@ export default function Custom404() {
 
   return (
     <>
+      {/* Page header */}
+      <Head>
+        <title>404</title>
+      </Head>
+      {/* End page header */}
+
       <Grid
         container
         direction="column"

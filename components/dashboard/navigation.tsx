@@ -7,8 +7,7 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { useEffect, useState } from "react";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -16,12 +15,13 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button, MenuItem, useMediaQuery } from "@mui/material";
 import { useAuth } from "../../store/AuthContext";
+import Image from "next/image";
 
 // Icons
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SettingsIcon from "@mui/icons-material/Settings";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 export default function Navigation(props) {
   // <========== Variables ==========>
@@ -32,6 +32,8 @@ export default function Navigation(props) {
   const activeRoute = (routeName, currentRoute) => {
     return routeName === currentRoute ? true : false;
   };
+  const isMedium = useMediaQuery(theme.breakpoints.up("md"));
+
   const routes = [
     {
       id: 1,
@@ -98,7 +100,7 @@ export default function Navigation(props) {
   const DrawerHeader = styled("div")(({ theme }) => ({
     display: "flex",
     alignItems: "center",
-    padding: theme.spacing(0, 1),
+    mt: 8,
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
@@ -109,8 +111,8 @@ export default function Navigation(props) {
   })<{
     open?: boolean;
   }>(({ theme, open }) => ({
+    // These properties all get applies when the navbar is closed
     flexGrow: 1,
-
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -128,28 +130,7 @@ export default function Navigation(props) {
   // <========== Body ==========>
   return (
     <Box sx={{ display: "flex" }}>
-      {/* This is the bar at the top of the screen */}
-      <AppBar
-        position="fixed"
-        open={open}
-        color="transparent"
-        sx={{ boxShadow: "none" }}
-      >
-        <Toolbar>
-          <IconButton onClick={toggleDrawer} sx={{ ml: -2 }}>
-            {open === true ? (
-              <ChevronLeftIcon sx={{ fontSize: "30px" }} />
-            ) : (
-              <ChevronRightIcon sx={{ fontSize: "30px" }} />
-            )}
-          </IconButton>
-          <Box sx={{ flexGrow: 1 }}></Box>
-          <Button onClick={handleSignout}>
-            <Typography sx={{ color: "red" }}>Logout</Typography>
-          </Button>
-        </Toolbar>
-      </AppBar>
-      {/* This is the drawer on the left of the screen */}
+      {/* Drawer */}
       <Drawer
         sx={{
           width: drawerWidth,
@@ -157,10 +138,7 @@ export default function Navigation(props) {
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
-            backgroundImage: `url("/images/navigationDrawer.jpg")`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "bottom",
+            backgroundColor: "#f5f5f5",
           },
         }}
         variant="persistent"
@@ -171,9 +149,23 @@ export default function Navigation(props) {
           <Box sx={{ flexGrow: 1 }} />
           <Image src="/images/logo.png" height={45} width={45} alt="Logo" />
           {open === true && (
-            <Typography sx={{ fontSize: "24px", fontWeight: 800 }}>
-              Occomy
-            </Typography>
+            <>
+              <Typography sx={{ fontSize: "24px", fontWeight: 800 }}>
+                Occomy
+              </Typography>
+              {isMedium ? (
+                // We return this at medium or above
+                <div></div>
+              ) : (
+                // We return this at small
+                <>
+                  <Box sx={{ flexGrow: 1 }} />
+                  <IconButton onClick={toggleDrawer}>
+                    <ChevronLeftIcon sx={{ fontSize: "30px" }} />
+                  </IconButton>
+                </>
+              )}
+            </>
           )}
           <Box sx={{ flexGrow: 1 }}></Box>
         </DrawerHeader>
@@ -185,7 +177,10 @@ export default function Navigation(props) {
               style={{ textDecoration: "none", color: "black" }}
               key={index}
             >
-              <MenuItem selected={activeRoute(item.path, router.pathname)}>
+              <MenuItem
+                onClick={toggleDrawer}
+                selected={activeRoute(item.path, router.pathname)}
+              >
                 <ListItem button key={index}>
                   <ListItemIcon>
                     {" "}
@@ -198,7 +193,55 @@ export default function Navigation(props) {
           ))}
         </List>
       </Drawer>
-      <Main open={open}>{props.mainPage}</Main>
+      {/* End drawer */}
+
+      {/* Appbar */}
+      <AppBar position="fixed" open={open}>
+        <Toolbar>
+          <IconButton onClick={toggleDrawer} sx={{ ml: -2 }}>
+            {open === true ? (
+              <ChevronLeftIcon
+                sx={{
+                  fontSize: "30px",
+                  color: "white",
+                  [theme.breakpoints.up("md")]: {
+                    display: "flex",
+                  },
+                  [theme.breakpoints.down("md")]: {
+                    display: "none",
+                  },
+                }}
+              />
+            ) : (
+              <MenuIcon sx={{ fontSize: "30px", color: "white" }} />
+            )}
+          </IconButton>
+          <Box sx={{ flexGrow: 1 }}></Box>
+          <Button onClick={handleSignout}>
+            <Typography sx={{ color: "white" }}>Logout</Typography>
+          </Button>
+        </Toolbar>
+      </AppBar>
+
+      {/* End appbar */}
+
+      {/* Main content */}
+      {isMedium ? (
+        // We return this at medium or above
+        <Main onClick={toggleDrawer} open={open}>
+          {props.mainPage}
+        </Main>
+      ) : (
+        // We return this at small
+        <Box
+          onClick={toggleDrawer}
+          sx={{ flexGrow: "1", marginLeft: `-${drawerWidth}px` }}
+        >
+          {props.mainPage}
+        </Box>
+      )}
+
+      {/* End main content */}
     </Box>
   );
 }

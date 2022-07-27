@@ -40,9 +40,6 @@ export default function CreateAccount() {
     // Prevent defaults
     event.preventDefault();
 
-    console.log("Here");
-    console.log(imageFileStorage);
-
     // Show the progress indicator
     setProgressIndicator(true);
 

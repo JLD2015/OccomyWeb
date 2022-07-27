@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getFirestore, onSnapshot } from "firebase/firestore";
+import { getAuth, signOut } from "firebase/auth";
+import { doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 const firebaseConfig = {
@@ -21,6 +21,12 @@ const db = getFirestore(app);
 export const monitorTransaction = (documentID: string, snapshot, error) => {
   const docRef = doc(db, "transactions", documentID);
   return onSnapshot(docRef, snapshot, error);
+};
+
+// Used for fetching a copy of the user's data
+export const fetchData = async (uid: string) => {
+  const docRef = doc(db, "users", uid);
+  return await getDoc(docRef);
 };
 
 // <========== Used for monitoring whether user is llogged in ==========>

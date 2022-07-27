@@ -96,10 +96,11 @@ export default function LoginSection() {
                 // Store the necesary details in session storage
                 localStorage.setItem("accessToken", user.accessToken);
                 localStorage.setItem("userName", user.displayName);
+                localStorage.setItem("uid", user.uid);
 
                 if (userCredential.user.emailVerified) {
                   // We can now move over to the dashboard
-                  router.replace("/dashboard");
+                  router.replace("/settings");
                 } else {
                   // Send user to email verification screen
                   localStorage.setItem("email", userCredential.user.email);

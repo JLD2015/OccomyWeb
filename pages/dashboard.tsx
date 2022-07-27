@@ -1,5 +1,6 @@
 import { Router } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "../store/AuthContext";
@@ -18,6 +19,12 @@ export default function Dashboard() {
   // <========== Body ==========>
   return (
     <>
+      {/* Page header */}
+      <Head>
+        <title>Dashboard</title>
+      </Head>
+      {/* End page header */}
+
       <Grid
         container
         direction="column"
