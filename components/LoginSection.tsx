@@ -405,7 +405,7 @@ export default function LoginSection() {
                             fontSize: 22,
                           },
                           [theme.breakpoints.down("md")]: {
-                            fontSize: 14,
+                            fontSize: 16,
                           },
                         }}
                       >
@@ -415,7 +415,7 @@ export default function LoginSection() {
                   )}
                   {progressIndicator && (
                     <CircularProgress
-                      size={isMedium ? 32 : 20}
+                      size={isMedium ? 32 : 24}
                       sx={{
                         color: "white",
                       }}
