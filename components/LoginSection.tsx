@@ -14,13 +14,13 @@ import {
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import Image from "next/image";
 import { Box } from "@mui/system";
 import { useTheme } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Script from "next/script";
 import * as FirebaseService from "../services/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
@@ -33,6 +33,7 @@ export default function LoginSection() {
   const [email, setEmail] = useState("");
   const [forgotSpinner, setForgotSpinner] = useState(false);
   const [emailDialog, setEmailDialog] = useState(false);
+  const isMedium = useMediaQuery(theme.breakpoints.up("md"));
 
   // <========== Functions ==========>
   function getOperatingSystem() {
@@ -398,11 +399,27 @@ export default function LoginSection() {
                 >
                   {!progressIndicator && (
                     <>
-                      <Typography sx={{ fontSize: 22 }}>Log In</Typography>
+                      <Typography
+                        sx={{
+                          [theme.breakpoints.up("md")]: {
+                            fontSize: 22,
+                          },
+                          [theme.breakpoints.down("md")]: {
+                            fontSize: 14,
+                          },
+                        }}
+                      >
+                        Log In
+                      </Typography>
                     </>
                   )}
                   {progressIndicator && (
-                    <CircularProgress size={32} sx={{ color: "white" }} />
+                    <CircularProgress
+                      size={isMedium ? 32 : 20}
+                      sx={{
+                        color: "white",
+                      }}
+                    />
                   )}
                 </Button>
                 {prompt !== "" && (
