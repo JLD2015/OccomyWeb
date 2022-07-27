@@ -90,8 +90,15 @@ export default function PaymentForm() {
                 localStorage.setItem("accessToken", user.accessToken);
                 localStorage.setItem("userName", user.displayName);
 
-                // We can now move over to the payment approval page
-                router.replace("/approval");
+                if (userCredential.user.emailVerified) {
+                  // We can now move over to the payment approval page
+                  router.replace("/approval");
+                } else {
+                  // Send user to email verification screen
+                  localStorage.setItem("email", userCredential.user.email);
+                  localStorage.setItem("name", userCredential.user.displayName);
+                  router.replace("/verifyemail");
+                }
               })
               .catch((error) => {
                 const errorMessage = error.message;

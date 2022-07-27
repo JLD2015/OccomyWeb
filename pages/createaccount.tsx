@@ -10,17 +10,20 @@ import {
   useTheme,
 } from "@mui/material";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import Script from "next/script";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function CreateAccount() {
   // <========== Variables ==========>
   const theme = useTheme();
   const [progressIndicator, setProgressIndicator] = useState(false);
   const [prompt, setPrompt] = useState("");
+  const router = useRouter();
 
   // Image selection
   const [imageFile, setImageFile] = useState(null);
+  const [imageFileStorage, setImageFileStorage] = useState(null);
   const inputImageReference = useRef(null);
 
   // Input fields
@@ -37,8 +40,15 @@ export default function CreateAccount() {
     // Prevent defaults
     event.preventDefault();
 
+    console.log("Here");
+    console.log(imageFileStorage);
+
     // Show the progress indicator
     setProgressIndicator(true);
+
+    // Store name and email in local storage
+    localStorage.setItem("email", email);
+    localStorage.setItem("name", name);
 
     // Get a reCAPTCHA token
     window.grecaptcha.ready(() => {
@@ -47,17 +57,6 @@ export default function CreateAccount() {
           action: "submit",
         })
         .then(async (token) => {
-          // Get data from the form.
-          const data = {
-            token: token,
-            name: event.target.name.value,
-            email: event.target.email.value,
-            phone: event.target.phone.value,
-            password: event.target.password.value,
-            confirmpassword: event.target.confirmpassword.value,
-          };
-          const JSONdata = JSON.stringify(data);
-
           // Make sure passwords match
           if (password !== confirmPassword) {
             setProgressIndicator(false);
@@ -67,7 +66,112 @@ export default function CreateAccount() {
             return;
           }
 
-          console.log(JSONdata);
+          // Ensure password strength
+          var passwordRegex = new RegExp(
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})"
+          );
+          if (!passwordRegex.test(password)) {
+            setProgressIndicator(false);
+            setPrompt("Weak password");
+            setPassword("");
+            setConfirmPassword("");
+            return;
+          }
+
+          // Get data from the form.
+          const data = {
+            token: token,
+          };
+          const JSONdata = JSON.stringify(data);
+
+          // Verify reCAPTCHA token
+          const endpoint = "/api/services/verifyrecaptcha";
+          const options = {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSONdata,
+          };
+
+          const response = await fetch(endpoint, options);
+          const result = await response.json();
+
+          if (result.status === "success") {
+            // Attempt to create the user
+            const formData = new FormData();
+            formData.append("profilepicture", imageFileStorage);
+            formData.append("email", event.target.email.value);
+            formData.append("password", event.target.password.value);
+            formData.append("displayname", event.target.name.value);
+            formData.append("phonenumber", event.target.phone.value);
+
+            const request = new XMLHttpRequest();
+
+            request.onreadystatechange = function () {
+              if (request.readyState === 4) {
+                const result = JSON.parse(this.response);
+
+                // If the account already exists
+                if (
+                  result.status.message ===
+                  "The email address is already in use by another account."
+                ) {
+                  setProgressIndicator(false);
+                  setPrompt("Account already exists");
+                  setName("");
+                  setEmail("");
+                  setPhone("");
+                  setPassword("");
+                  setConfirmPassword("");
+                  return;
+                }
+
+                // If a weak password was provided
+                else if (
+                  result.status.message ===
+                  "The password must be a string with at least 6 characters."
+                ) {
+                  setProgressIndicator(false);
+                  setPrompt("Weak password");
+                  setName("");
+                  setEmail("");
+                  setPhone("");
+                  setPassword("");
+                  setConfirmPassword("");
+                  return;
+                }
+
+                // The account was created -> Ask user to verify their email
+                else if (result.status === "Success") {
+                  setProgressIndicator(false);
+                  router.replace("/verifyemail");
+                }
+
+                // An error occured
+                else {
+                  setProgressIndicator(false);
+                  setPrompt("Something went wrong, please try again");
+                  setName("");
+                  setEmail("");
+                  setPhone("");
+                  setPassword("");
+                  setConfirmPassword("");
+                }
+              }
+            };
+
+            request.open("POST", "/api/auth/createaccount");
+            request.send(formData);
+          } else {
+            setProgressIndicator(false);
+            setPrompt("We think you're a robot");
+            setName("");
+            setEmail("");
+            setPhone("");
+            setPassword("");
+            setConfirmPassword("");
+          }
         });
     });
   };
@@ -75,6 +179,8 @@ export default function CreateAccount() {
   // Used for selecting image
   const handleImageClick = (event) => {
     const newImage = event.target?.files?.[0];
+
+    setImageFileStorage(newImage);
 
     if (newImage) {
       setImageFile(URL.createObjectURL(newImage));
@@ -84,10 +190,27 @@ export default function CreateAccount() {
   const handleImageChange = (event) => {
     const newImage = event.target?.files?.[0];
 
+    setImageFileStorage(newImage);
+
     if (newImage) {
       setImageFile(URL.createObjectURL(newImage));
     }
   };
+
+  // <========== Page loads ==========>
+  useEffect(() => {
+    async function fetchImage() {
+      let response = await fetch("/images/defaultavatar.png");
+      let data = await response.blob();
+      let metadata = {
+        type: "image/jpeg",
+      };
+      let file = new File([data], "defaultavatar.jpg", metadata);
+      setImageFileStorage(file);
+    }
+
+    fetchImage();
+  }, [setImageFileStorage]);
 
   // <========== Body ==========>
   return (
@@ -137,8 +260,17 @@ export default function CreateAccount() {
               boxShadow: 2,
               [theme.breakpoints.down("md")]: {
                 m: 2,
+                mt: 12,
                 ...(prompt !== "" && {
-                  mt: 8,
+                  mt: 18,
+                }),
+              },
+              [theme.breakpoints.up("md")]: {
+                mt: 4,
+                mb: 2,
+                ...(prompt !== "" && {
+                  mt: 12,
+                  mb: 3,
                 }),
               },
             }}
@@ -276,6 +408,11 @@ export default function CreateAccount() {
                     },
                   }}
                 />
+                <Typography sx={{ color: "gray", fontSize: 12 }}>
+                  * Password must be at least 8 characters long and contain at
+                  least one number, one uppercase letter and one lowercase
+                  letter.
+                </Typography>
                 <Button
                   variant="contained"
                   color="primary"

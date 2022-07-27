@@ -96,8 +96,16 @@ export default function LoginSection() {
                 // Store the necesary details in session storage
                 localStorage.setItem("accessToken", user.accessToken);
                 localStorage.setItem("userName", user.displayName);
-                // We can now move over to the payment approval page
-                router.replace("/dashboard");
+
+                if (userCredential.user.emailVerified) {
+                  // We can now move over to the dashboard
+                  router.replace("/dashboard");
+                } else {
+                  // Send user to email verification screen
+                  localStorage.setItem("email", userCredential.user.email);
+                  localStorage.setItem("name", userCredential.user.displayName);
+                  router.replace("/verifyemail");
+                }
               })
               .catch((error) => {
                 const errorMessage = error.message;
@@ -144,6 +152,7 @@ export default function LoginSection() {
 
     // Make sure the user has enetered an email address
     if (email === "") {
+      setForgotSpinner(false);
       setPrompt("Please enter an email address");
       return;
     }

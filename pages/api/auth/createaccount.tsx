@@ -150,7 +150,8 @@ export default async function CreateAccount(
                 const JSONdata = JSON.stringify(data);
 
                 // Send emails
-                const endpoint = "https://www.occomy.com/api/email/sendverifyemail";
+                const endpoint =
+                  "https://www.occomy.com/api/email/sendverifyemail";
                 const options = {
                   method: "POST",
                   headers: {
