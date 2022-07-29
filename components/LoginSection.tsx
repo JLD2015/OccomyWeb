@@ -1,7 +1,6 @@
 // <========== Imports ==========>
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 import {
-  Alert,
   Button,
   CircularProgress,
   Dialog,
@@ -198,7 +197,7 @@ export default function LoginSection() {
         alignItems="center"
         height={"100vh"}
         sx={{
-          backgroundImage: `url("/images/homeBackground.jpg")`,
+          backgroundImage: `url("/images/homeBackground.webp")`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
         }}

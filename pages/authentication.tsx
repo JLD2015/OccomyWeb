@@ -29,7 +29,7 @@ export default function Authentication() {
         alignItems="center"
         height="100vh"
         sx={{
-          backgroundImage: `url("/images/authenticationBackground.jpg")`,
+          backgroundImage: `url("/images/authenticationBackground.webp")`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover"
         }}

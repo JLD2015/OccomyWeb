@@ -197,12 +197,12 @@ export default function CreateAccount() {
   // <========== Page loads ==========>
   useEffect(() => {
     async function fetchImage() {
-      let response = await fetch("/images/defaultavatar.png");
+      let response = await fetch("/images/defaultavatar.webp");
       let data = await response.blob();
       let metadata = {
         type: "image/jpeg",
       };
-      let file = new File([data], "defaultavatar.jpg", metadata);
+      let file = new File([data], "defaultavatar.webp", metadata);
       setImageFileStorage(file);
     }
 
@@ -302,7 +302,7 @@ export default function CreateAccount() {
                 onChange={handleImageChange}
               />
               <Avatar
-                src={imageFile || "/images/defaultavatar.png"}
+                src={imageFile || "/images/defaultavatar.webp"}
                 sx={{
                   [theme.breakpoints.up("md")]: {
                     height: 200,

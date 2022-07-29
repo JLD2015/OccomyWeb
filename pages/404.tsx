@@ -38,7 +38,7 @@ export default function Custom404() {
         alignItems="center"
         height={"100vh"}
         sx={{
-          backgroundImage: `url("/images/404Background.jpg")`,
+          backgroundImage: `url("/images/404Background.webp")`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundPosition: "bottom",

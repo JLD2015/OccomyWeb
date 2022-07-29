@@ -133,7 +133,7 @@ export default function Contact() {
         alignItems="center"
         height={"100vh"}
         sx={{
-          backgroundImage: `url("/images/contactBackground.jpg")`,
+          backgroundImage: `url("/images/contactBackground.webp")`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           [theme.breakpoints.up("md")]: {
