@@ -38,13 +38,13 @@ export default function Navigation(props) {
     {
       id: 1,
       label: "Dashboard",
-      path: "/dashboard",
+      path: "/dashboard/overview",
       icon: DashboardIcon,
     },
     {
       id: 2,
       label: "Settings",
-      path: "/settings",
+      path: "/dashboard/settings",
       icon: SettingsIcon,
     },
   ];

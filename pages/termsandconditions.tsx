@@ -257,7 +257,34 @@ export default function TermsAndConditions() {
     <>
       {/* Header */}
       <Head>
-        <title>Terms and Conditions</title>
+        <title>Terms and Conditions - Occomy</title>
+        <meta
+          name="description"
+          content="By opening an Occomy account you agree to comply with the terms and conditions set forth in this agreement."
+          key="desc"
+        />
+        <link
+          rel="canonical"
+          href="https://www.occomy.com/termsandconditions"
+        />
+
+        {/* Open graph tags */}
+        <meta property="og:title" content="Terms and Conditions - Occomy" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://www.occomy.com/images/logo.png"
+        />
+        <meta
+          property="og:url"
+          content="https://www.occomy.com/termsandconditions"
+        />
+        <meta
+          property="og:description"
+          content="By opening an Occomy account you agree to comply with the terms and conditions set forth in this agreement."
+        />
+        <meta property="og:site_name" content="Occomy" />
+        {/* End open graph tags */}
       </Head>
 
       {/* Body */}

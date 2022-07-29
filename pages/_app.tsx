@@ -12,7 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
   // <========== Variables ==========>
   const router = useRouter();
   const theme = createTheme({});
-  const dashboardRoutes = ["/dashboard", "/settings"];
+  const dashboardRoutes = ["/dashboard/overview", "/dashboard/settings"];
 
   // <========== Body ==========>
   return (

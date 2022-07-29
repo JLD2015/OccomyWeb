@@ -8,8 +8,8 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useAuth } from "../store/AuthContext";
-import { fetchData } from "../services/firebase";
+import { useAuth } from "../../store/AuthContext";
+import { fetchData } from "../../services/firebase";
 
 // Icons
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";

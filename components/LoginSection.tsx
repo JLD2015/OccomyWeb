@@ -101,7 +101,7 @@ export default function LoginSection() {
 
                 if (userCredential.user.emailVerified) {
                   // We can now move over to the dashboard
-                  router.replace("/settings");
+                  router.replace("/dashboard/settings");
                 } else {
                   // Send user to email verification screen
                   localStorage.setItem("email", userCredential.user.email);

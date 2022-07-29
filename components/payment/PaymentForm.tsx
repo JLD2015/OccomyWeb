@@ -92,7 +92,7 @@ export default function PaymentForm() {
 
                 if (userCredential.user.emailVerified) {
                   // We can now move over to the payment approval page
-                  router.replace("/approval");
+                  router.replace("/payment/approval");
                 } else {
                   // Send user to email verification screen
                   localStorage.setItem("email", userCredential.user.email);

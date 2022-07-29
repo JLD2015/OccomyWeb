@@ -68,7 +68,7 @@ export default function Payment() {
       container: document.getElementById("lottie"),
       renderer: "svg",
       autoplay: true,
-      animationData: require("../public/animations/loading.json"),
+      animationData: require("../../public/animations/loading.json"),
     });
 
     // Return clean up function here
@@ -82,7 +82,7 @@ export default function Payment() {
         <>
           <a
             id="invisibleLink"
-            href={`http://localhost:3000/payment?transactionID=${transactionID}`}
+            href={`http://localhost:3000/payment/processpayment?transactionID=${transactionID}`}
           ></a>
         </>
       )}
@@ -90,7 +90,7 @@ export default function Payment() {
         <>
           <a
             id="invisibleLink"
-            href={`https://www.occomy.com/payment?transactionID=${transactionID}`}
+            href={`https://www.occomy.com/payment/processpayment?transactionID=${transactionID}`}
           ></a>
         </>
       )}

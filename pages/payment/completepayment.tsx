@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
-import Footer from "../components/Footer";
+import Footer from "../../components/Footer";
 import Head from "next/head";
-import PaymentForm from "../components/payment/PaymentForm";
+import PaymentForm from "../../components/payment/PaymentForm";
 
 // The complete payment page is identical to the payment page
 // It is used to redirect to for mobile apps so the deeplinks don't get triggered again

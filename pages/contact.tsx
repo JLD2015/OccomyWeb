@@ -24,6 +24,7 @@ export default function Contact() {
   const theme = useTheme();
 
   // <========== Functions ==========>
+
   const handleSubmit = async (event) => {
     // Stop form from submitting and refreshing page
     event.preventDefault();
@@ -92,7 +93,28 @@ export default function Contact() {
     <>
       {/* Page header */}
       <Head>
-        <title>Contact Us</title>
+        <title>Contact Us - Occomy</title>
+        <meta
+          name="description"
+          content="Have any questions or need help with an Occomy product or service? We're here to help. Get support."
+          key="desc"
+        />
+        <link rel="canonical" href="https://www.occomy.com/contact" />
+
+        {/* Open graph tags */}
+        <meta property="og:title" content="Contact Us - Occomy" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://www.occomy.com/images/logo.png"
+        />
+        <meta property="og:url" content="https://www.occomy.com/contact" />
+        <meta
+          property="og:description"
+          content="Have any questions or need help with an Occomy product or service? We're here to help. Get support."
+        />
+        <meta property="og:site_name" content="Occomy" />
+        {/* End open graph tags */}
       </Head>
 
       {/* Scripts */}

@@ -351,7 +351,31 @@ export default function PrivacyPolicy() {
     <>
       {/* Header */}
       <Head>
-        <title>Privacy Policy</title>
+        <title>Privacy Policy - Occomy</title>
+        <meta
+          name="description"
+          content="The Occomy Privacy Policy explains how we collect, retain, process and use your personal data."
+          key="desc"
+        />
+        <link rel="canonical" href="https://www.occomy.com/privacypolicy" />
+
+        {/* Open graph tags */}
+        <meta property="og:title" content="Privacy Policy - Occomy" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://www.occomy.com/images/logo.png"
+        />
+        <meta
+          property="og:url"
+          content="https://www.occomy.com/privacypolicy"
+        />
+        <meta
+          property="og:description"
+          content="The Occomy Privacy Policy explains how we collect, retain, process and use your personal data."
+        />
+        <meta property="og:site_name" content="Occomy" />
+        {/* End open graph tags */}
       </Head>
 
       {/* Body */}

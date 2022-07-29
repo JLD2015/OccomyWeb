@@ -1,9 +1,9 @@
 import { Grid } from "@mui/material";
-import Footer from "../components/Footer";
+import Footer from "../../components/Footer";
 import Head from "next/head";
-import PaymentForm from "../components/payment/PaymentForm";
+import PaymentForm from "../../components/payment/PaymentForm";
 
-export default function Payment() {
+export default function ProcessPayment() {
   // <========== Body ==========>
   return (
     <>

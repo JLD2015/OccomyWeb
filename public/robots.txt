@@ -1,0 +1,26 @@
+# Allow all crawlers to site
+User-agent: *
+Allow: /
+
+# Block all crawlers for /dashboard/
+User-agent: *
+Disallow: /dashboard/
+
+# Block all crawlers for /payment/
+User-agent: *
+Disallow: /payment/
+
+# Block all crawlers for /authentication
+User-agent: *
+Disallow: /authentication
+
+# Block all crawlers for /createaccount
+User-agent: *
+Disallow: /createaccount
+
+# Block all crawlers for /verifyemail
+User-agent: *
+Disallow: /verifyemail
+
+# Specify sitemap location
+Sitemap: https://www.occomy.com/sitemap.xml

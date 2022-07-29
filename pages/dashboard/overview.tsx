@@ -1,11 +1,10 @@
-import { Router } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useAuth } from "../store/AuthContext";
+import { useAuth } from "../../store/AuthContext";
 
-export default function Dashboard() {
+export default function Overview() {
   // <========== Protected route ==========>
   const { authUser, loading } = useAuth();
   const router = useRouter();

@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import Head from "next/head";
-import ApprovalForm from "../components/payment/ApprovalForm";
-import Footer from "../components/Footer";
+import ApprovalForm from "../../components/payment/ApprovalForm";
+import Footer from "../../components/Footer";
 
 export default function ApproveTransaction(props) {
   // <========== Body ==========>
