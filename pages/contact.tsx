@@ -106,7 +106,7 @@ export default function Contact() {
         <meta property="og:type" content="website" />
         <meta
           property="og:image"
-          content="https://www.occomy.com/images/logo.png"
+          content="https://www.occomy.com/images/logoWithBackground.png"
         />
         <meta property="og:url" content="https://www.occomy.com/contact" />
         <meta
