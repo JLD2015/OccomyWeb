@@ -6,6 +6,11 @@ import {
   Chip,
   CircularProgress,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Grid,
   Stack,
@@ -48,6 +53,10 @@ export default function ApprovalForm() {
   const [orderid, setOrderid] = useState("");
   const [callback, setCallback] = useState("");
   const [documentID, setDocumentID] = useState("");
+  const [userLatitude, setUserLatitude] = useState(null);
+  const [userLongitude, setUserLongitude] = useState(null);
+  const [locationDialog, setLocationDialog] = useState(false);
+  const [disableApproveButton, setDisableApproveButton] = useState(true);
 
   // <========== Functions ==========>
   const declineClicked = async () => {
@@ -107,99 +116,67 @@ export default function ApprovalForm() {
   };
 
   const approveClicked = async () => {
-    // First we start the progress indicator
-    setProgressIndicatorApprove(true);
-
-    // First we need to get the user's location
+    // This must only be clickable if we have location permissions
     if (window.navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async function (position) {
-          const { latitude, longitude } = position.coords;
+      // First we start the progress indicator
+      setProgressIndicatorApprove(true);
 
-          // First we call the API to approve the transaction
-          const data = {
-            transactionid: localStorage.getItem("documentID"),
-            latitude: latitude,
-            longitude: longitude,
-          };
-          const JSONdata = JSON.stringify(data);
+      // First we call the API to approve the transaction
+      const data = {
+        transactionid: localStorage.getItem("documentID"),
+        latitude: userLatitude,
+        longitude: userLongitude,
+      };
+      const JSONdata = JSON.stringify(data);
 
-          // Make API call
-          const endpoint = "/api/transact/approvetransaction";
-          const options = {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: localStorage.getItem("accessToken"),
-            },
-            body: JSONdata,
-          };
-
-          const response = await fetch(endpoint, options);
-          const result = await response.json();
-
-          if (result.status === "Success") {
-            setTransactionApproved(true);
-
-            // Stop the progeress indicator
-            setProgressIndicatorApprove(false);
-
-            //Redirect back to the merchant's website
-            setTimeout(function () {
-              const redirectString = `${callback}?orderid=${orderid}&status=approved&reference=${documentID}`;
-              router.replace(redirectString);
-              // Clear the local storage
-              localStorage.clear();
-            }, 5000);
-          } else {
-            console.log(result);
-            setTransactionError(true);
-
-            // Stop the progeress indicator
-            setProgressIndicatorApprove(false);
-
-            // Redirect back to the merchant's website
-            setTimeout(function () {
-              const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${documentID}`;
-              router.replace(redirectString);
-              // Clear the local storage
-              localStorage.clear();
-            }, 5000);
-          }
+      // Make API call
+      const endpoint = "/api/transact/approvetransaction";
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
         },
-        async function () {
-          console.log("Location permission blocked");
+        body: JSONdata,
+      };
 
-          setApprovalErrorLocation(true);
+      const response = await fetch(endpoint, options);
+      const result = await response.json();
 
-          // Stop the progeress indicator
-          setProgressIndicatorApprove(false);
+      if (result.status === "Success") {
+        setTransactionApproved(true);
 
-          // Redirect back to the merchant's website
-          setTimeout(function () {
-            const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${documentID}`;
-            router.replace(redirectString);
-            // Clear the local storage
-            localStorage.clear();
-          }, 5000);
-        }
-      );
-    } else {
-      console.log("Could not get user's location");
+        // Stop the progeress indicator
+        setProgressIndicatorApprove(false);
 
-      setTransactionError(true);
+        //Redirect back to the merchant's website
+        setTimeout(function () {
+          const redirectString = `${callback}?orderid=${orderid}&status=approved&reference=${documentID}`;
+          router.replace(redirectString);
+          // Clear the local storage
+          localStorage.clear();
+        }, 5000);
+      } else {
+        console.log(result);
+        setTransactionError(true);
 
-      // Stop the progeress indicator
-      setProgressIndicatorApprove(false);
+        // Stop the progeress indicator
+        setProgressIndicatorApprove(false);
 
-      // Redirect back to the merchant's website
-      setTimeout(function () {
-        const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${documentID}`;
-        router.replace(redirectString);
-        // Clear the local storage
-        localStorage.clear();
-      }, 5000);
+        // Redirect back to the merchant's website
+        setTimeout(function () {
+          const redirectString = `${callback}?orderid=${orderid}&status=declined&reference=${documentID}`;
+          router.replace(redirectString);
+          // Clear the local storage
+          localStorage.clear();
+        }, 5000);
+      }
     }
+  };
+
+  // If the user has not given location permissions
+  const handleLocationDialogueClose = () => {
+    router.back();
   };
 
   // <========== Page Loads ==========>
@@ -213,6 +190,26 @@ export default function ApprovalForm() {
     setOrderid(localStorage.getItem("orderid"));
     setCallback(localStorage.getItem("callback"));
     setDocumentID(localStorage.getItem("documentID"));
+  }, []);
+
+  // Get location permissions
+  useEffect(() => {
+    if (window.navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        // If we have location permissions
+        function (position) {
+          const { latitude, longitude } = position.coords;
+          setUserLatitude(latitude);
+          setUserLongitude(longitude);
+          setDisableApproveButton(false);
+        },
+
+        // If we don't have location permissions
+        function () {
+          setLocationDialog(true);
+        }
+      );
+    }
   }, []);
 
   // <========== Body ==========>
@@ -596,6 +593,7 @@ export default function ApprovalForm() {
               >
                 <Button
                   onClick={approveClicked}
+                  disabled={disableApproveButton}
                   fullWidth
                   variant="contained"
                   color="success"
@@ -651,6 +649,28 @@ export default function ApprovalForm() {
         </Grid>
         {/* End column 1 -> Forms outside of card */}
       </Container>
+
+      {/* Dialog if user doesn't give location permissions */}
+      <Dialog
+        open={locationDialog}
+        onClose={handleLocationDialogueClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Location Services Are Disabled"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            We need access to your location to process payments, please enable
+            location services.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleLocationDialogueClose}>Ok</Button>
+        </DialogActions>
+      </Dialog>
+      {/* End dialog if user doesn't give location permissions */}
     </>
   );
 }
