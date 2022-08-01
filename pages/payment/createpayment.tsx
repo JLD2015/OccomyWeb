@@ -1,4 +1,4 @@
-import { Grid, Stack } from "@mui/material";
+import { Container, Grid, Stack, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import lottie from "lottie-web";
@@ -8,6 +8,7 @@ export default function Payment() {
   // <========== Variables ==========>
   const router = useRouter();
   const [transactionID, setTransactionID] = useState("");
+  const [transactionFailed, setTransactionFailed] = useState(false);
 
   // <========== Page Loads ==========>
 
@@ -54,8 +55,13 @@ export default function Payment() {
           document.getElementById("invisibleLink").click();
         }, 500);
       } else {
-        console.log("Could not create transaction");
-        console.log(result);
+        // Need to indicate that the payment can't be processed
+        setTransactionFailed(true);
+
+        setTimeout(function () {
+          const redirectString = `${router.query.callback}?orderid=${router.query.orderid}&status=declined&reference=${result.documentID}`;
+          router.replace(redirectString);
+        }, 5000);
       }
     };
 
@@ -102,20 +108,54 @@ export default function Payment() {
         height={"100vh"}
         sx={{ backgroundColor: "#f5f5f5" }}
       >
-        <Stack
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-          spacing={2}
-        >
-          <Box
-            sx={{
-              width: 300,
-            }}
-          >
-            <div id="lottie" />
-          </Box>
-        </Stack>
+        {/* If the transaction is successful */}
+        {!transactionFailed && (
+          <>
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+            >
+              <Box
+                sx={{
+                  width: 300,
+                }}
+              >
+                <div id="lottie" />
+              </Box>
+            </Stack>
+          </>
+        )}
+
+        {/* If the transaction fails */}
+        {transactionFailed && (
+          <>
+            <Container>
+              {/* Column 1 -> Forms outside of card */}
+              <Grid
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                sx={{
+                  backgroundColor: "white",
+                  borderRadius: "25px",
+                  p: 2,
+                  boxShadow: 2,
+                }}
+              >
+                <Typography sx={{ fontSize: 40, fontWeight: 600}}>
+                  Transaction Failed
+                </Typography>
+                <Typography sx={{ py: 1 }}>
+                  Redirecting to merchant website ...
+                </Typography>
+              </Grid>
+              {/* End column 1 -> Forms outside of card */}
+            </Container>
+          </>
+        )}
       </Grid>
     </>
   );
