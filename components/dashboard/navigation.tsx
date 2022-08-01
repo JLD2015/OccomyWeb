@@ -196,7 +196,14 @@ export default function Navigation(props) {
       {/* End drawer */}
 
       {/* Appbar */}
-      <AppBar position="fixed" open={open}>
+      <AppBar
+        position="fixed"
+        open={open}
+        sx={{
+          background:
+            "linear-gradient(315deg, rgba(46,76,109,1) 35%, rgba(57,111,176,1) 100%)",
+        }}
+      >
         <Toolbar>
           <IconButton onClick={toggleDrawer} sx={{ ml: -2 }}>
             {open === true ? (
