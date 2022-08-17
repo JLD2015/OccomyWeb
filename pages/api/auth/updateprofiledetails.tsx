@@ -1,7 +1,10 @@
 import admin from "../../../firebase/firebase";
+import { client, xml } from "@xmpp/client";
+const crypto = require("crypto");
 import formidable from "formidable";
 import { getStorage } from "firebase-admin/storage";
 import { NextApiRequest, NextApiResponse } from "next";
+import { readFileSync } from "fs";
 import uuid from "uuid-v4";
 
 export const config = {
@@ -51,6 +54,21 @@ export default function updateProfileDetails(
     }
     const phone = fields.phone;
 
+    if (!fields.jid) {
+      return response
+        .status(400)
+        .json({ status: "Please provide a valid jid" });
+    }
+    const jidfull = fields.jid;
+    const jid = fields.jid.split("@")[0];
+
+    if (!fields.jidpassword) {
+      return response
+        .status(400)
+        .json({ status: "Please provide a valid jid password" });
+    }
+    const jidpassword = fields.jidpassword;
+
     // First we validate the authorization token
     admin
       .auth()
@@ -85,15 +103,49 @@ export default function updateProfileDetails(
                   uniqueIdentifier;
 
                 // 5. Update the user's details
-
                 admin.firestore().collection("users").doc(uid).update({
                   name: name,
                   phoneNumber: phone,
                   profilePhotoUrl: downloadUrl,
                 });
 
-                // 6. Trigger completion
-                return response.status(200).json({ status: "Success" });
+                // 6. Update the user's XMPP VCard
+                const xmpp = client({
+                  service: "xmpp://xmpp.occomy.com:5222",
+                  username: jid,
+                  password: jidpassword,
+                });
+
+                // Monitor when we go online
+                xmpp.on("online", async (address) => {
+
+                  // Get the base64 version of the image file
+                  var bitmap = readFileSync(profilepicturepath);
+                  var base64picture = Buffer.from(bitmap).toString("base64");
+
+                  // Update the user's VCard once we are online
+                  const iq = xml(
+                    "iq",
+                    { id: crypto.randomUUID(), type: "set" },
+                    xml(
+                      "vCard",
+                      { xmlns: "vcard-temp" },
+                      xml("FN", {}, name),
+                      xml("JABBERID", {}, jidfull),
+                      xml(
+                        "PHOTO",
+                        {},
+                        xml("TYPE", {}, "image/jpeg"),
+                        xml("BINVAL", {}, base64picture)
+                      )
+                    )
+                  );
+                  await xmpp.send(iq);
+                  return response.status(200).json({ status: "success" });
+                });
+
+                // Fourth we start the XMPP connection
+                xmpp.start().catch(console.error);
               });
           });
         } catch (e) {
