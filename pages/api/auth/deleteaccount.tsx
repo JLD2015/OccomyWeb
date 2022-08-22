@@ -50,6 +50,7 @@ export default async function DeleteAccount(
         .doc(uid)
         .set(data)
         .then(async () => {
+
           // 4. Remove the user's depositID
           admin
             .firestore()
@@ -64,10 +65,13 @@ export default async function DeleteAccount(
           // 5. Delete the user's profile in the users collection
           admin.firestore().collection("users").doc(uid).delete();
 
-          // 6. Delete the user under the authorization section
+          // 6. Delete the user under the XMPP collection
+          admin.firestore().collection("XMPP").doc(uid).delete();
+
+          // 7. Delete the user under the authorization section
           admin.auth().deleteUser(uid);
 
-          // 7. Delete the user's XMPP account
+          // 8. Delete the user's XMPP account
           const dataXMPP = JSON.stringify({
             user: userData.jid,
             host: "xmpp.occomy.com",
@@ -90,7 +94,7 @@ export default async function DeleteAccount(
 
           const postResponse = await fetch(endpointXMPP, optionsXMPP);
           postResponse.json().then(async () => {
-            // 8. Send email to user
+            // 9. Send email to user
             const data = {
               email: userData.email,
             };
