@@ -1,12 +1,13 @@
+import admin from "../../../firebase/firebase";
+import { client, xml } from "@xmpp/client";
 import crypto from "crypto";
 import { encrypt } from "../../../functions/cryptography";
-import { getStorage } from "firebase-admin/storage";
-import admin from "../../../firebase/firebase";
 import formidable from "formidable";
+import { getStorage } from "firebase-admin/storage";
 import { NextApiRequest, NextApiResponse } from "next";
-import uuid from "uuid-v4";
 import randomIDGenerator from "../../../functions/randomIDGenerator";
-import { ShieldMoonOutlined } from "@mui/icons-material";
+import { readFileSync } from "fs";
+import uuid from "uuid-v4";
 
 export const config = {
   api: {
@@ -190,34 +191,74 @@ export default async function CreateAccount(
                     .then(async () => {
                       console.log("Added user XMPP record");
 
-                      // Sixth we send a verify email to the user
-                      const data = {
-                        name: displayname,
-                        email: email,
-                      };
-                      const JSONdata = JSON.stringify(data);
+                      // Sixth we need to update the user's name and photo on the XMPP server
+                      const xmpp = client({
+                        service: "xmpp://xmpp.occomy.com:5222",
+                        username: XMPPUsername,
+                        password: XMPPPassword,
+                      });
 
-                      // Send emails
-                      const endpoint =
-                        "https://www.occomy.com/api/email/sendverifyemail";
-                      const options = {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSONdata,
-                      };
+                      xmpp.on("online", async (address) => {
+                        // Get the base64 version of the image file
+                        var bitmap = readFileSync(profilepicturepath);
+                        var base64picture =
+                          Buffer.from(bitmap).toString("base64");
 
-                      const res = await fetch(endpoint, options);
-                      const result = await res.json();
+                        // Update the user's VCard once we are online
+                        const iq = xml(
+                          "iq",
+                          { id: crypto.randomUUID(), type: "set" },
+                          xml(
+                            "vCard",
+                            { xmlns: "vcard-temp" },
+                            xml("FN", {}, displayname),
+                            xml("JABBERID", {}, XMPPUsername),
+                            xml(
+                              "PHOTO",
+                              {},
+                              xml("TYPE", {}, "image/jpeg"),
+                              xml("BINVAL", {}, base64picture)
+                            )
+                          )
+                        );
+                        xmpp.send(iq).then(async () => {
+                          console.log("Updated user's vCard");
 
-                      if (result.status === "Success") {
-                        return response.status(200).json({ status: "Success" });
-                      } else {
-                        return response
-                          .status(400)
-                          .json({ status: "Could not send verify email" });
-                      }
+                          // Seventh we send a verify email to the user
+                          const data = {
+                            name: displayname,
+                            email: email,
+                          };
+                          const JSONdata = JSON.stringify(data);
+
+                          // Send emails
+                          const endpoint =
+                            "https://www.occomy.com/api/email/sendverifyemail";
+                          const options = {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSONdata,
+                          };
+
+                          const res = await fetch(endpoint, options);
+                          const result = await res.json();
+
+                          if (result.status === "Success") {
+                            console.log("Done");
+                            return response
+                              .status(200)
+                              .json({ status: "Success" });
+                          } else {
+                            return response
+                              .status(400)
+                              .json({ status: "Could not send verify email" });
+                          }
+                        });
+                      });
+
+                      xmpp.start().catch(console.error);
                     });
                 });
             });

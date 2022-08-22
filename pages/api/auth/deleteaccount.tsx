@@ -67,32 +67,56 @@ export default async function DeleteAccount(
           // 6. Delete the user under the authorization section
           admin.auth().deleteUser(uid);
 
-          // 7. Send email to user
-          const data = {
-            email: userData.email,
-          };
-          const JSONdata = JSON.stringify(data);
+          // 7. Delete the user's XMPP account
+          const dataXMPP = JSON.stringify({
+            user: userData.jid,
+            host: "xmpp.occomy.com",
+          });
 
-          const endpoint =
-            "https://www.occomy.com/api/email/sendaccountdeletionemail";
-          const options = {
+          const endpointXMPP = "https://xmpp.occomy.com:5443/api/unregister";
+          const authorization =
+            `Basic ` +
+            Buffer.from(
+              `${process.env.XMPP_ADMIN_USERNAME}:${process.env.XMPP_ADMIN_PASSWORD}`
+            ).toString(`base64`);
+          const optionsXMPP = {
             method: "POST",
             headers: {
+              Authorization: authorization,
               "Content-Type": "application/json",
             },
-            body: JSONdata,
+            body: dataXMPP,
           };
 
-          const res = await fetch(endpoint, options);
-          const result = await res.json();
+          const postResponse = await fetch(endpointXMPP, optionsXMPP);
+          postResponse.json().then(async () => {
+            // 8. Send email to user
+            const data = {
+              email: userData.email,
+            };
+            const JSONdata = JSON.stringify(data);
 
-          if (result.status === "Success") {
-            return response.status(200).json({ status: "Success" });
-          } else {
-            return response
-              .status(400)
-              .json({ status: "Could not send account deletion email" });
-          }
+            const endpoint =
+              "https://www.occomy.com/api/email/sendaccountdeletionemail";
+            const options = {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSONdata,
+            };
+
+            const res = await fetch(endpoint, options);
+            const result = await res.json();
+
+            if (result.status === "Success") {
+              return response.status(200).json({ status: "Success" });
+            } else {
+              return response
+                .status(400)
+                .json({ status: "Could not send account deletion email" });
+            }
+          });
         });
     })
     .catch((error) => {
