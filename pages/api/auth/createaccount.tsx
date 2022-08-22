@@ -123,8 +123,8 @@ export default async function CreateAccount(
             const uniqueAPI = encrypt(userRecord.uid);
 
             // Third we need to create an XMPP account for the user
-            const XMPPUsername = crypto.randomUUID() + "@xmpp.occomy.com";
-            const XMPPPassword = crypto.randomUUID().replaceAll("-", "");
+            const XMPPUsername = crypto.randomUUID();
+            const XMPPPassword = crypto.randomUUID();
 
             const XMPPData = JSON.stringify({
               user: XMPPUsername,
@@ -147,121 +147,120 @@ export default async function CreateAccount(
               body: XMPPData,
             };
 
-            fetch(endpoint, options).then(async () => {
-              console.log("Created XMPP account");
+            const XMPPResponse = await fetch(endpoint, options);
+            const XMPPResult = await XMPPResponse.json();
 
-              // Fourth we upload all of the user's info
-              const data = {
-                apiKey: uniqueAPI,
-                balance: 0,
-                bankAccountNumber: "",
-                bankName: "",
-                compliant: true,
-                depositID: uniqueID,
-                email: email,
-                jid: XMPPUsername,
-                jidPassword: XMPPPassword,
-                name: displayname,
-                notifications: [],
-                notificationTokens: [],
-                phoneNumber: phonenumber,
-                profilePhotoUrl: downloadUrl,
-              };
-              admin
-                .firestore()
-                .collection("users")
-                .doc(userRecord.uid)
-                .set(data)
-                .then(async () => {
-                  console.log("Added user info");
+            console.log("Created XMPP account");
 
-                  // Fifth we need to create a XMPP entry on Firestore for the user
-                  const XMPPData = {
-                    email: email,
-                    jid: XMPPUsername,
-                    name: displayname,
-                    phoneNumber: phonenumber,
-                  };
+            // Fourth we upload all of the user's info
+            const data = {
+              apiKey: uniqueAPI,
+              balance: 0,
+              bankAccountNumber: "",
+              bankName: "",
+              compliant: true,
+              depositID: uniqueID,
+              email: email,
+              jid: XMPPUsername + "@xmpp.occomy.com",
+              jidPassword: XMPPPassword,
+              name: displayname,
+              notifications: [],
+              notificationTokens: [],
+              phoneNumber: phonenumber,
+              profilePhotoUrl: downloadUrl,
+            };
+            admin
+              .firestore()
+              .collection("users")
+              .doc(userRecord.uid)
+              .set(data)
+              .then(async () => {
+                console.log("Added user info");
 
-                  admin
-                    .firestore()
-                    .collection("XMPP")
-                    .doc(userRecord.uid)
-                    .set(XMPPData)
-                    .then(async () => {
-                      console.log("Added user XMPP record");
+                // Fifth we need to create a XMPP entry on Firestore for the user
+                const XMPPData = {
+                  email: email,
+                  jid: XMPPUsername,
+                  name: displayname,
+                  phoneNumber: phonenumber,
+                };
 
-                      // Sixth we need to update the user's name and photo on the XMPP server
-                      const xmpp = client({
-                        service: "xmpp://xmpp.occomy.com:5222",
-                        username: XMPPUsername,
-                        password: XMPPPassword,
-                      });
+                admin
+                  .firestore()
+                  .collection("XMPP")
+                  .doc(userRecord.uid)
+                  .set(XMPPData)
+                  .then(async () => {
+                    console.log("Added user XMPP record");
 
-                      xmpp.on("online", async (address) => {
-                        // Get the base64 version of the image file
-                        var bitmap = readFileSync(profilepicturepath);
-                        var base64picture =
-                          Buffer.from(bitmap).toString("base64");
-
-                        // Update the user's VCard once we are online
-                        const iq = xml(
-                          "iq",
-                          { id: crypto.randomUUID(), type: "set" },
-                          xml(
-                            "vCard",
-                            { xmlns: "vcard-temp" },
-                            xml("FN", {}, displayname),
-                            xml("JABBERID", {}, XMPPUsername),
-                            xml(
-                              "PHOTO",
-                              {},
-                              xml("TYPE", {}, "image/jpeg"),
-                              xml("BINVAL", {}, base64picture)
-                            )
-                          )
-                        );
-                        xmpp.send(iq).then(async () => {
-                          console.log("Updated user's vCard");
-
-                          // Seventh we send a verify email to the user
-                          const data = {
-                            name: displayname,
-                            email: email,
-                          };
-                          const JSONdata = JSON.stringify(data);
-
-                          // Send emails
-                          const endpoint =
-                            "https://www.occomy.com/api/email/sendverifyemail";
-                          const options = {
-                            method: "POST",
-                            headers: {
-                              "Content-Type": "application/json",
-                            },
-                            body: JSONdata,
-                          };
-
-                          const res = await fetch(endpoint, options);
-                          const result = await res.json();
-
-                          if (result.status === "Success") {
-                            console.log("Done");
-                            return response
-                              .status(200)
-                              .json({ status: "Success" });
-                          } else {
-                            return response
-                              .status(400)
-                              .json({ status: "Could not send verify email" });
-                          }
-                        });
-                      });
-
-                      xmpp.start().catch(console.error);
+                    // Sixth we need to update the user's name and photo on the XMPP server
+                    const xmpp = client({
+                      service: "xmpp://xmpp.occomy.com:5222",
+                      username: XMPPUsername,
+                      password: XMPPPassword,
                     });
-                });
-            });
+
+                    xmpp.on("online", async (address) => {
+                      // Get the base64 version of the image file
+                      var bitmap = readFileSync(profilepicturepath);
+                      var base64picture =
+                        Buffer.from(bitmap).toString("base64");
+
+                      // Update the user's VCard once we are online
+                      const iq = xml(
+                        "iq",
+                        { id: crypto.randomUUID(), type: "set" },
+                        xml(
+                          "vCard",
+                          { xmlns: "vcard-temp" },
+                          xml("FN", {}, displayname),
+                          xml("JABBERID", {}, XMPPUsername),
+                          xml(
+                            "PHOTO",
+                            {},
+                            xml("TYPE", {}, "image/jpeg"),
+                            xml("BINVAL", {}, base64picture)
+                          )
+                        )
+                      );
+                      await xmpp.send(iq);
+
+                      console.log("Updated user's vCard");
+                    });
+
+                    xmpp.start().catch(console.error);
+
+                    // Seventh we send a verify email to the user
+                    const data = {
+                      name: displayname,
+                      email: email,
+                    };
+                    const JSONdata = JSON.stringify(data);
+
+                    // Send emails
+                    const endpoint =
+                      "https://www.occomy.com/api/email/sendverifyemail";
+                    const options = {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSONdata,
+                    };
+
+                    const res = await fetch(endpoint, options);
+                    const result = await res.json();
+
+                    if (result.status === "Success") {
+                      console.log("Done");
+                      return response.status(200).json({ status: "Success" });
+                    } else {
+                      return response
+                        .status(400)
+                        .json({ status: "Could not send verify email" });
+                    }
+                  });
+              });
           }
         });
       })
