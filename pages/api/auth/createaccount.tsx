@@ -123,8 +123,8 @@ export default async function CreateAccount(
             const uniqueAPI = encrypt(userRecord.uid);
 
             // Third we need to create an XMPP account for the user
-            const XMPPUsername = crypto.randomUUID().toUpperCase();
-            const XMPPPassword = crypto.randomUUID().toUpperCase();
+            const XMPPUsername = crypto.randomUUID().toUpperCase().replaceAll('-', '');
+            const XMPPPassword = crypto.randomUUID().toUpperCase().replaceAll('-', '');
 
             const XMPPData = JSON.stringify({
               user: XMPPUsername,
