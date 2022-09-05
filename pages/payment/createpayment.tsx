@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import lottie from "lottie-web";
 import { Box } from "@mui/system";
+import Head from "next/head";
 
 export default function Payment() {
   // <========== Variables ==========>
@@ -84,6 +85,28 @@ export default function Payment() {
   // <========== Body ==========>
   return (
     <>
+      <Head>
+        <title>Payment - Occomy</title>
+        <meta
+          name="description"
+          content="Please use the link to complete payment using Occomy."
+          key="desc"
+        />
+
+        {/* Open graph tags */}
+        <meta property="og:title" content="Payment - Occomy" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://www.occomy.com/images/logoWithBackground.png"
+        />
+        <meta
+          property="og:description"
+          content="Please use the link to complete payment using Occomy."
+        />
+        <meta property="og:site_name" content="Occomy" />
+        {/* End open graph tags */}
+      </Head>
       {process.env.NODE_ENV === "development" && (
         <>
           <a
@@ -145,7 +168,7 @@ export default function Payment() {
                   boxShadow: 2,
                 }}
               >
-                <Typography sx={{ fontSize: 40, fontWeight: 600}}>
+                <Typography sx={{ fontSize: 40, fontWeight: 600 }}>
                   Transaction Failed
                 </Typography>
                 <Typography sx={{ py: 1 }}>
