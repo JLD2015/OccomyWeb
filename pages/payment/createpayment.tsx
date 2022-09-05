@@ -86,7 +86,7 @@ export default function Payment() {
   return (
     <>
       <Head>
-        <title>Payment - Occomy</title>
+        <title>Payment Request - Occomy</title>
         <meta
           name="description"
           content="Please use the link to complete payment using Occomy."
@@ -94,7 +94,7 @@ export default function Payment() {
         />
 
         {/* Open graph tags */}
-        <meta property="og:title" content="Payment - Occomy" />
+        <meta property="og:title" content="Payment Request - Occomy" />
         <meta property="og:type" content="website" />
         <meta
           property="og:image"
