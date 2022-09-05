@@ -1,8 +1,5 @@
 import admin from "../../../firebase/firebase";
-import {
-  addNotification,
-  sendNotification,
-} from "../../../functions/sendNotification";
+import { APNsNotification } from "../../../functions/sendNotification";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default function processWithdrawal(
@@ -65,20 +62,12 @@ export default function processWithdrawal(
 
         // 6. Send notification to the user
         for (const token of userData.notificationTokens) {
-          sendNotification(
+          APNsNotification(
             token,
             "Withdrawal",
-            `Successful withdrawal of R${Number(amount).toFixed(2)}`,
-            function (status) {
-              console.log(status);
-            }
+            `Withdrew R${Number(amount).toFixed(2)}`
           );
         }
-
-        addNotification(
-          uid,
-          `Withdrawal: Successful withdrawal of R${Number(amount).toFixed(2)}`
-        );
 
         // Seventh we trigger completion
         response.status(200).json({ status: "Success" });

@@ -1,8 +1,5 @@
 import admin from "../../../firebase/firebase";
-import {
-  addNotification,
-  sendNotification,
-} from "../../../functions/sendNotification";
+import { APNsNotification } from "../../../functions/sendNotification";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default function approveTransaction(
@@ -129,46 +126,26 @@ export default function approveTransaction(
               // Send notifications to everybody
 
               // Merchant
-              for (const token of merchantData.notificationTokens) {
-                sendNotification(
+              for (const token of merchantData.APNs) {
+                APNsNotification(
                   token,
                   "Received Payment",
-                  `Received payment of R${transactionData.amount.toFixed(
-                    2
-                  )} from ${customerData.name}`,
-                  function (status) {
-                    console.log(status);
-                  }
+                  `Received R${transactionData.amount.toFixed(2)} from ${
+                    customerData.name
+                  }`
                 );
               }
-
-              addNotification(
-                merchantDoc.id,
-                `Received: Received payment of R${transactionData.amount.toFixed(
-                  2
-                )} from ${customerData.name}`
-              );
 
               // Customer
-              for (const token of customerData.notificationTokens) {
-                sendNotification(
+              for (const token of customerData.APNs) {
+                APNsNotification(
                   token,
                   "Made Payment",
-                  `Made payment of R${transactionData.amount.toFixed(2)} to ${
+                  `Paid R${transactionData.amount.toFixed(2)} to ${
                     merchantData.name
-                  }`,
-                  function (status) {
-                    console.log(status);
-                  }
+                  }`
                 );
               }
-
-              addNotification(
-                customerDoc.id,
-                `Paid: Made payment of R${transactionData.amount.toFixed(
-                  2
-                )} to ${merchantData.name}`
-              );
 
               return response.status(200).json({
                 status: "Success",

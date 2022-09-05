@@ -2,10 +2,7 @@ import admin from "../../../firebase/firebase";
 import { NextApiRequest, NextApiResponse } from "next";
 import randomIDGenerator from "../../../functions/randomIDGenerator";
 import uuid from "uuid-v4";
-import {
-  addNotification,
-  sendNotification,
-} from "../../../functions/sendNotification";
+import { APNsNotification } from "../../../functions/sendNotification";
 
 export default function processWithdrawal(
   request: NextApiRequest,
@@ -146,6 +143,25 @@ export default function processWithdrawal(
                 longitude: longitude,
               }
             );
+
+            // Send notifications to sender and receiver
+            const senderTokens = senderData.APNs;
+            for (const token in senderTokens) {
+              APNsNotification(
+                senderTokens[token],
+                "Made Payment",
+                `Paid R${Number(amount).toFixed(2)} to ${recipientData.name}`
+              );
+            }
+
+            const receiverTokens = recipientData.APNs;
+            for (const token in receiverTokens) {
+              APNsNotification(
+                receiverTokens[token],
+                "Received Payment",
+                `Received R${Number(amount).toFixed(2)} from ${senderData.name}`
+              );
+            }
 
             response.status(200).json({ status: "Success" });
 

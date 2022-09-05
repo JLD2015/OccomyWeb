@@ -1,51 +1,34 @@
-import admin from "../firebase/firebase";
+import apn from "apn";
 
-export function sendNotification(
-  registrationToken: string,
-  title: string,
-  body: string,
-  callback: (arg0: string) => void
-) {
-  var payload = {
-    notification: {
-      title: title,
-      body: body,
-      sound: "default",
+export function APNsNotification(deviceToken: string, title: string, body: string) {
+  let provider = new apn.Provider({
+    token: {
+      key: "certificates/apnskey.p8",
+      keyId: "CSV4ZA2D57",
+      teamId: "838HD9T5J5",
     },
+    production: false,
+  });
+
+  var notification = new apn.Notification();
+  notification.alert = {
+    title: title,
+    body: body,
   };
+  notification.mutableContent = true;
+  notification.sound = "bingbong.aiff";
+  notification.topic = "com.occomy.Occomy";
 
-  var options = {
-    priority: "high",
-  };
+  provider.send(notification, deviceToken).then((result) => {
+    // see documentation for an explanation of result
+    if (result.failed.length > 0) {
+      console.log("Could not send APNs notification");
+      console.log(result.failed);
+    } else {
+      console.log(result);
+    }
 
-  admin
-    .messaging()
-    .sendToDevice(registrationToken, payload, options)
-    .then(function (response) {
-      callback("Notification sent");
-      if (response.results[0].error != null) {
-        callback("Failed");
-      } else {
-        callback("Success");
-      }
-    })
-    .catch(function (error) {
-      callback("Failed");
-    });
-}
-
-export async function addNotification(userID: string, newNotification: string) {
-  // We first need a copy of the user's notifications
-  const userRef = admin.firestore().collection("users").doc(userID);
-  const doc = await userRef.get();
-  if (!doc.exists) {
-    console.log("User does not exist");
-  } else {
-    const notifications = doc.data().notifications;
-
-    // Add new notification and update
-    notifications.push(newNotification);
-
-    await userRef.update({ notifications: notifications });
-  }
+    // Shut down the provider once the notification has been sent
+    provider.shutdown();
+  });
 }
