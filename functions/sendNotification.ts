@@ -1,9 +1,14 @@
 import apn from "apn";
+import path from "path";
 
-export function APNsNotification(deviceToken: string, title: string, body: string) {
+export function APNsNotification(
+  deviceToken: string,
+  title: string,
+  body: string
+) {
   let provider = new apn.Provider({
     token: {
-      key: "certificates/apnskey.p8",
+      key: path.join(process.cwd(), "certificates/apnskey.p8"),
       keyId: "CSV4ZA2D57",
       teamId: "838HD9T5J5",
     },
