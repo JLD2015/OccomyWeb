@@ -154,6 +154,7 @@ export default async function CreateAccount(
 
             // Fourth we upload all of the user's info
             const data = {
+              APNs: [],
               apiKey: uniqueAPI,
               balance: 0,
               bankAccountNumber: "",
@@ -164,8 +165,6 @@ export default async function CreateAccount(
               jid: XMPPUsername + "@xmpp.occomy.com",
               jidPassword: XMPPPassword,
               name: displayname,
-              notifications: [],
-              notificationTokens: [],
               phoneNumber: phonenumber,
               profilePhotoUrl: downloadUrl,
             };
