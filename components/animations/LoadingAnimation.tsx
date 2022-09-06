@@ -7,7 +7,7 @@ export default function LoadingAnimation() {
       container: document.getElementById("lottie"),
       renderer: "svg",
       autoplay: true,
-      loop: false,
+      loop: true,
       animationData: require("../../public/animations/loading.json"),
     });
 
