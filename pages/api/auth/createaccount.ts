@@ -265,7 +265,7 @@ export default async function CreateAccount(
         });
       })
       .catch((error) => {
-        return response.status(400).json({ status: error });
+        return response.status(400).json({ status: error.message });
       });
   });
 }
