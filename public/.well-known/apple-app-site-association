@@ -1,11 +1,17 @@
 {
   "applinks": {
-    "apps": [],
     "details": [
       {
-        "appID": "838HD9T5J5.com.occomy.Occomy",
-        "paths": [
-          "/payment/processpayment"
+        "appIDs": [
+          "838HD9T5J5.com.occomy.Occomy"
+        ],
+        "components": [
+          {
+            "/": "/payment/processpayment",
+            "?": {
+              "transactionID": "?*"
+            }
+          }
         ]
       }
     ]
