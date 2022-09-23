@@ -25,7 +25,7 @@ export default function Payment() {
       };
       const JSONdata = JSON.stringify(apiData);
 
-      const endpoint = "/api/transact/createtransaction";
+      const endpoint = "https://api.occomy.com/transact/createtransaction";
       const options = {
         method: "POST",
         headers: {
@@ -37,6 +37,8 @@ export default function Payment() {
 
       const response = await fetch(endpoint, options);
       const result = await response.json();
+
+      console.log(result);
 
       if (result.status == "Success") {
         localStorage.setItem("amount", Number(router.query.amount).toFixed(2));
